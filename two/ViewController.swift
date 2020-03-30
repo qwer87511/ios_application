@@ -15,13 +15,6 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        
-        // open all
-        clickTurn("useless")
-        
-        // turn a random card
-        firstValue = Int(arc4random_uniform(UInt32(b.count)))
-        clickb(b[firstValue])
     }
 
     override func didReceiveMemoryWarning() {
@@ -33,29 +26,28 @@ class ViewController: UIViewController {
     @IBOutlet weak var f: UITextField!
     @IBOutlet weak var ff: UITextField!
     
+    @IBOutlet weak var winLable: UILabel!
+    @IBOutlet weak var loseLable: UILabel!
     lazy var game = MatchingGame(numOfPairs: (b.count + 1) / 2)
     
-    
-    
-    let cards: [String] = Array(1...13).map {
-        (number) -> String in String(number)}
-    
     var s = 0
-    var firstValue = -1
-    var closedTitle = "😀"
+    var closedTitle = ""
     
     
     @IBAction func clickb(_ sender: UIButton) {
-        print(1)
         s = s + 1
         ff.text = String(s);
+        
         let cardIndex = Int(b.index(of: sender)!)
         
-        if firstValue == -1 {
-            firstValue = Int(cards[cardIndex])!
-        }
         game.chooseCard(at: cardIndex)
-        refreshCard(i: cardIndex)
+        
+        
+        refreshAllCards()
+        
+        refreshCounts()
+        
+        game.nextTurn()
     }
     
     private func updateCards() {
@@ -64,16 +56,7 @@ class ViewController: UIViewController {
     
     private func openCard(sender: UIButton, cardIndex: Array<Card>.Index) {
         sender.backgroundColor = .green
-        sender.setTitle(cards[cardIndex], for: UIControlState.normal)
-        let value = Int(cards[cardIndex])!
-        
-        
-        if(value == 1 || value > firstValue){
-            f.text = "win";
-        }
-        else {
-            f.text = "lose";
-        }
+        sender.setTitle(String(game.getCard(i: cardIndex).id), for: UIControlState.normal)
     }
     private func closeCard(sender: UIButton, cardIndex: Array<Card>.Index) {
         sender.setTitle(closedTitle, for: UIControlState.normal)
@@ -98,6 +81,18 @@ class ViewController: UIViewController {
     @IBAction func clickTurn(_ sender: Any) {
         game.setAllCards(isOpened: !game.isOpenedCard(i: 0))
         refreshAllCards()
+    }
+    
+    private func refreshCounts() {
+        winLable.text = String(game.getWinCount())
+        loseLable.text = String(game.getLoseCount())
+    }
+    
+    @IBAction func clickReset(_ sender: Any) {
+//        game.reset()
+//        let firstValue = Int(arc4random_uniform(UInt32(b.count)))
+//        clickb(b[firstValue])
+//        game.nextTurn()
     }
 }
 

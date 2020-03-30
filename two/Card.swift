@@ -10,8 +10,8 @@ import Foundation
 
 struct Card {
     var id:Int
-    var isMached:Bool = false
-    var isOpened:Bool = true
+    var isMatched:Bool = false
+    var isOpened:Bool = false
     
     init(id:Int) {
         self.id = id
