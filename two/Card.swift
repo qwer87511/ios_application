@@ -9,11 +9,13 @@
 import Foundation
 
 struct Card {
-    var id:Int
-    var isMatched:Bool = false
-    var isOpened:Bool = false
+    var id: Int
+    var number: Int
+    var isMatched: Bool = false
+    var isOpened: Bool = false
     
-    init(id:Int) {
+    init(id:Int, number: Int) {
         self.id = id
+        self.number = number
     }
 }

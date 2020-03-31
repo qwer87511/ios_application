@@ -28,7 +28,9 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var winLable: UILabel!
     @IBOutlet weak var loseLable: UILabel!
+
     lazy var game = MatchingGame(numOfPairs: (b.count + 1) / 2)
+
     
     var s = 0
     var closedTitle = ""
@@ -42,12 +44,9 @@ class ViewController: UIViewController {
         
         game.chooseCard(at: cardIndex)
         
-        
         refreshAllCards()
         
         refreshCounts()
-        
-        game.nextTurn()
     }
     
     private func updateCards() {

@@ -19,33 +19,51 @@ class MatchingGame {
     var justWin: Bool = false
     
     public init(numOfPairs: Int) {
-        for i in 1...numOfPairs*2 {
-            cards += [Card(id: i), Card(id: i)]
+        for i in 0..<numOfPairs*2 {
+            cards += [Card(id: i, number: i / 2)]
         }
         cards = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: cards) as! [Card]
     }
     
-    public func chooseCard(at index: Array<Card>.Index) {
+    public func chooseCard(at index: Int) {
         
-        cards[index].isOpened = !cards[index].isOpened
+        //cards[index].isOpened = !cards[index].isOpened
         
+        // first card
         if first {
             firstIndex = index
             firstValue = cards[index].id
             closeUnmatchedCards()
+            cards[index].isOpened = true
+            first = false
         }
+        // second card
         else {
-            if cards[index].id == firstValue {
-                cards[index].isMatched = true
-                cards[firstIndex].isMatched = true
-                winCount += 1
-                justWin = true
+            // chose the first card
+            if index == firstIndex {
+                cards[index].isOpened = false
             }
+            // chose the other card
             else {
-                loseCount += 1
-                justWin = false
+                cards[index].isOpened = true
+                // mached
+                if cards[index].id == firstValue {
+                    cards[index].isMatched = true
+                    cards[firstIndex].isMatched = true
+                    winCount += 1
+                    justWin = true
+                }
+                // not mached
+                else {
+                    loseCount += 1
+                    justWin = false
+                }
             }
+            
+            first = true
         }
+
+        ///////////////////////////////
     }
     
     public func isOver() -> Bool {
@@ -60,6 +78,10 @@ class MatchingGame {
     public func isOpenedCard(i: Int) -> Bool {
         return cards[i].isOpened
     }
+
+    public func isMatchedCard(i: Int) -> Bool {
+        return cards[i].isMatched
+    }
     
     public func setAllCards(isOpened: Bool) {
         for i in 0..<cards.count {
@@ -69,10 +91,6 @@ class MatchingGame {
     
     public func isFirst() -> Bool {
         return first;
-    }
-    
-    public func nextTurn() {
-        first = !first
     }
     
     public func getFirstValue() -> Int {
