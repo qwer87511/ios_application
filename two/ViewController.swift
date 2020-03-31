@@ -55,7 +55,7 @@ class ViewController: UIViewController {
     
     private func openCard(sender: UIButton, cardIndex: Array<Card>.Index) {
         sender.backgroundColor = .green
-        sender.setTitle(String(game.getCard(i: cardIndex).id), for: UIControlState.normal)
+        sender.setTitle(String(game.getCard(i: cardIndex).number), for: UIControlState.normal)
     }
     private func closeCard(sender: UIButton, cardIndex: Array<Card>.Index) {
         sender.setTitle(closedTitle, for: UIControlState.normal)

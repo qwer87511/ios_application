@@ -32,7 +32,7 @@ class MatchingGame {
         // first card
         if first {
             firstIndex = index
-            firstValue = cards[index].id
+            firstValue = cards[index].number
             closeUnmatchedCards()
             cards[index].isOpened = true
             first = false
@@ -47,7 +47,7 @@ class MatchingGame {
             else {
                 cards[index].isOpened = true
                 // mached
-                if cards[index].id == firstValue {
+                if cards[index].number == firstValue {
                     cards[index].isMatched = true
                     cards[firstIndex].isMatched = true
                     winCount += 1
