@@ -114,12 +114,15 @@ class MatchingGame {
     }
     
     public func reset() {
+        cards = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: cards) as! [Card]
         for i in 0..<cards.count {
-            cards[i].isOpened = false;
+            cards[i].isOpened = false
+            cards[i].isMatched = false
         }
         winCount = 0
         loseCount = 0
         first = true
+        justWin = false
     }
     
     public func getCard(i : Int) -> Card {

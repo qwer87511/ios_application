@@ -34,7 +34,7 @@ class ViewController: UIViewController {
     
     var s = 0
     var closedTitle = ""
-    
+    var emojis = ["😋", "🐆", "🌖", "🔥", "🌈", "💦", "☔️", "🥄"]
     
     @IBAction func clickb(_ sender: UIButton) {
         s = s + 1
@@ -53,13 +53,13 @@ class ViewController: UIViewController {
         
     }
     
-    private func openCard(sender: UIButton, cardIndex: Array<Card>.Index) {
+    private func openCard(sender: UIButton, cardIndex: Int) {
         sender.backgroundColor = .green
-        sender.setTitle(String(game.getCard(i: cardIndex).number), for: UIControlState.normal)
+        sender.setTitle(emojis[game.getCard(i: cardIndex).number], for: UIControlState.normal)
     }
-    private func closeCard(sender: UIButton, cardIndex: Array<Card>.Index) {
+    private func closeCard(sender: UIButton, cardIndex: Int) {
         sender.setTitle(closedTitle, for: UIControlState.normal)
-        sender.backgroundColor = .red
+        sender.backgroundColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
     }
     
     private func refreshAllCards() {
@@ -75,6 +75,10 @@ class ViewController: UIViewController {
         else {
             closeCard(sender: b[i], cardIndex: i)
         }
+        
+        if game.isMatchedCard(i: i) {
+            b[i].backgroundColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 0.3033670775)
+        }
     }
     
     @IBAction func clickTurn(_ sender: Any) {
@@ -88,10 +92,9 @@ class ViewController: UIViewController {
     }
     
     @IBAction func clickReset(_ sender: Any) {
-//        game.reset()
-//        let firstValue = Int(arc4random_uniform(UInt32(b.count)))
-//        clickb(b[firstValue])
-//        game.nextTurn()
+        game.reset()
+        refreshAllCards()
+        refreshCounts()
     }
 }
 
