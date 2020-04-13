@@ -10,8 +10,6 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -32,13 +30,31 @@ class ViewController: UIViewController {
     lazy var game = MatchingGame(numOfPairs: (b.count + 1) / 2)
 
     
-    var s = 0
-    var closedTitle = ""
-    var emojis = ["😋", "🐆", "🌖", "🔥", "🌈", "💦", "☔️", "🥄"]
+    var flipCount = 0 {
+        didSet {
+            updateFlipCountLabel()
+        }
+    }
     
+    private func updateFlipCountLabel() {
+        //let 
+    }
+    
+    var closedTitle = ""
+    var emojis = "😋🐆🌖🔥🌈💦☔️🥄"
+    var emojiDict = [Card: String]()
+    
+    private func getEmoji(card: Card) -> String {
+        if emojiDict[card] == nil, emojis.count > 0 {
+            let randomIndex = emojis.index(emojis.startIndex, offsetBy: Int(arc4random_uniform(UInt32(emojis.count))))
+            emojiDict[card] = String(emojis.remove(at: randomIndex))
+        }
+        return emojiDict[card] ?? "?"
+    }
+
     @IBAction func clickb(_ sender: UIButton) {
-        s = s + 1
-        ff.text = String(s);
+        flipCount = flipCount + 1
+        ff.text = String(flipCount);
         
         let cardIndex = Int(b.index(of: sender)!)
         
@@ -55,7 +71,7 @@ class ViewController: UIViewController {
     
     private func openCard(sender: UIButton, cardIndex: Int) {
         sender.backgroundColor = .green
-        sender.setTitle(emojis[game.getCard(i: cardIndex).number], for: UIControlState.normal)
+        sender.setTitle(getEmoji(card: game.getCard(i: cardIndex)), for: UIControlState.normal)
     }
     private func closeCard(sender: UIButton, cardIndex: Int) {
         sender.setTitle(closedTitle, for: UIControlState.normal)
