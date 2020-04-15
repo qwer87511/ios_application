@@ -21,6 +21,7 @@ struct Card : Hashable {
     var number: Int
     var isMatched: Bool = false
     var isOpened: Bool = false
+    var wasEverOpened = false
     
     init(id:Int, number: Int) {
         self.id = id

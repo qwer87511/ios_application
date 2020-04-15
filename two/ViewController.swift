@@ -8,6 +8,17 @@
 
 import UIKit
 
+extension Int {
+    var arc4random: Int {
+        if self >= 0 {
+            return Int(arc4random_uniform(UInt32(self)))
+        }
+        else {
+            return -Int(arc4random_uniform(UInt32(-self)))
+        }
+    }
+}
+
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
@@ -26,35 +37,37 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var winLable: UILabel!
     @IBOutlet weak var loseLable: UILabel!
-
+    @IBOutlet weak var scoreLabel: UILabel!
+    
     lazy var game = MatchingGame(numOfPairs: (b.count + 1) / 2)
 
     
     var flipCount = 0 {
         didSet {
-            updateFlipCountLabel()
+            let attributes: [NSAttributedStringKey: Any] = [
+                .strokeWidth: 5.0,
+                .strokeColor: UIColor.orange
+            ]
+            let attributedString = NSAttributedString(string: "\(flipCount)", attributes: attributes)
+            ff.attributedText = attributedString
         }
     }
-    
-    private func updateFlipCountLabel() {
-        //let 
-    }
-    
+
     var closedTitle = ""
-    var emojis = "😋🐆🌖🔥🌈💦☔️🥄"
+    var emojisArray = ["🐶🐱🐭🐹🐰🦊🐻🐼", "🍏🍎🍐🍊🍋🍌🍉🍇", "⚽️🏀🏈⚾️🎾🏐🏉🎱", "🚗🚕🚙🚌🚎🏎🚓🚑", "😀☺️😘🤑😞😫😯😨", "🇲🇵🇬🇹🇹🇼🇸🇿🇳🇪🇳🇮🇮🇳🇪🇭"]
+    lazy var emojis = emojisArray[0]
     var emojiDict = [Card: String]()
     
     private func getEmoji(card: Card) -> String {
         if emojiDict[card] == nil, emojis.count > 0 {
-            let randomIndex = emojis.index(emojis.startIndex, offsetBy: Int(arc4random_uniform(UInt32(emojis.count))))
+            let randomIndex = emojis.index(emojis.startIndex, offsetBy: emojis.count.arc4random)
             emojiDict[card] = String(emojis.remove(at: randomIndex))
         }
         return emojiDict[card] ?? "?"
     }
 
     @IBAction func clickb(_ sender: UIButton) {
-        flipCount = flipCount + 1
-        ff.text = String(flipCount);
+        flipCount += 1
         
         let cardIndex = Int(b.index(of: sender)!)
         
@@ -62,7 +75,9 @@ class ViewController: UIViewController {
         
         refreshAllCards()
         
-        refreshCounts()
+        refreshScore()
+        
+        scoreLabel.text = String(game.getScore())
     }
     
     private func updateCards() {
@@ -102,15 +117,22 @@ class ViewController: UIViewController {
         refreshAllCards()
     }
     
-    private func refreshCounts() {
+    private func refreshScore() {
         winLable.text = String(game.getWinCount())
         loseLable.text = String(game.getLoseCount())
+        scoreLabel.text = String(game.getScore())
     }
     
     @IBAction func clickReset(_ sender: Any) {
         game.reset()
         refreshAllCards()
-        refreshCounts()
+        refreshScore()
+        resetTheme()
+    }
+    
+    private func resetTheme() {
+        emojis = emojisArray[emojisArray.count.arc4random]
+        emojiDict = [Card: String]()
     }
 }
 

@@ -17,6 +17,7 @@ class MatchingGame {
     var winCount: Int = 0
     var loseCount: Int = 0
     var justWin: Bool = false
+    var score = 0
     
     public init(numOfPairs: Int) {
         for i in 0..<numOfPairs*2 {
@@ -51,13 +52,23 @@ class MatchingGame {
                     cards[index].isMatched = true
                     cards[firstIndex].isMatched = true
                     winCount += 1
+                    score += 2
                     justWin = true
                 }
                 // not mached
                 else {
                     loseCount += 1
                     justWin = false
+                    if cards[index].wasEverOpened {
+                        score -= 1
+                    }
+                    if cards[firstIndex].wasEverOpened {
+                        score -= 1
+                    }
                 }
+                cards[index].wasEverOpened = true
+                cards[firstIndex].wasEverOpened = true
+                
             }
             
             first = true
@@ -123,6 +134,7 @@ class MatchingGame {
         loseCount = 0
         first = true
         justWin = false
+        score = 0
     }
     
     public func getCard(i : Int) -> Card {
@@ -135,5 +147,9 @@ class MatchingGame {
                 cards[i].isOpened = false;
             }
         }
+    }
+    
+    public func getScore() -> Int {
+        return score
     }
 }
