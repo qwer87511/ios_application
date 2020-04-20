@@ -24,6 +24,16 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        let numbers = [12, 34, 56, 78, 90, 21, 43, 65, 97, 709]
+        print("before")
+        for n in numbers {
+            print(String(n))
+        }
+        print("after")
+        for n in numbers.sorted(by: {($0 % 10) > ($1 % 10)}) {
+            print(String(n))
+        }
     }
 
     override func didReceiveMemoryWarning() {

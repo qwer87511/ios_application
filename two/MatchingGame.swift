@@ -152,4 +152,16 @@ class MatchingGame {
     public func getScore() -> Int {
         return score
     }
+    
+    private var indexOfTheOneAndOnlyFaceUpCard: Int? {
+        get {
+            let faceUpCardIndices = cards.indices.filter { cards[$0].isOpened }
+            return faceUpCardIndices.count == 1 ? faceUpCardIndices.first : nil
+        }
+        set {
+            for index in cards.indices {
+                cards[index].isOpened = index == newValue
+            }
+        }
+    }
 }
