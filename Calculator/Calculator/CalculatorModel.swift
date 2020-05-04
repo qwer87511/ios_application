@@ -8,6 +8,12 @@
 
 import Foundation
 
+extension Double {
+    var stringWithoutTrailingZeros: String {
+        return String(format: "%g", self)
+    }
+}
+
 class CalculatorModel {
     
     public init() {
@@ -19,29 +25,33 @@ class CalculatorModel {
         case sub
         case mul
         case div
-        case mod
     }
     
     var currentNumber: String = "0"
-    var isFirstNumber = true
-    var firstNumber = 0
-    var op: operation? = nil
-    var isShowingNumber = true
+    var firstNumber = "0"
     
-    var showingNumber:String {
+    var op: operation? = nil
+    
+    var isFirstNumber = true
+    var isShowingFirstNumber = false
+    var isCalculated = true
+    var isHavingNumber = false
+    
+    var showingNumber: String {
         get {
-            if isShowingNumber && currentNumber == "0" {
-                return String(firstNumber)
+            if isShowingFirstNumber {
+                return Double(firstNumber)!.stringWithoutTrailingZeros
             }
             else {
                 return currentNumber
             }
         }
     }
-
+    
+    var log: String = ""
     
     public func inputNumber(_ num: Int) {
-        if isShowingNumber {
+        if isShowingFirstNumber {
             currentNumber = "0"
         }
         
@@ -52,61 +62,120 @@ class CalculatorModel {
             currentNumber.append(String(num))
         }
         
-        isShowingNumber = false
+        isShowingFirstNumber = false
+        
+        isHavingNumber = true
+        
+        if op != nil {
+            isCalculated = false
+        }
     }
     
     public func setOperation(op: operation) {
-        self.op = op
-        if isFirstNumber {
-            firstNumber = Int(currentNumber)!
+        if !isCalculated {
+            calculate()
         }
-        isFirstNumber = false
+        
+        if (isHavingNumber) {
+            firstNumber = currentNumber
+        }
+        
+        isShowingFirstNumber = true
         currentNumber = "0"
-        isShowingNumber = true
+        isFirstNumber = false
+        
+        self.op = op
+
+        isHavingNumber = false
     }
     
     public func calculate() {
-        if op != nil {
-            var result = 0
+        if op != nil && !isFirstNumber {
+            var result = 0.0
+            
+            guard let lhs = Double(firstNumber) else { return }
+            guard let rhs = Double(currentNumber) else { return }
+            
+            var opSymbol: String = "?"
             
             switch op {
                 case .add:
-                    result = firstNumber + Int(currentNumber)!
+                    result = lhs + rhs
+                    opSymbol = "+"
                 case .sub:
-                    result = firstNumber - Int(currentNumber)!
+                    result = lhs - rhs
+                    opSymbol = "-"
+                
                 case .mul:
-                    result = firstNumber * Int(currentNumber)!
+                    result = lhs * rhs
+                    opSymbol = "*"
+                
                 case .div:
-                    if currentNumber != "0" {
-                        result = firstNumber / Int(currentNumber)!
+                    if rhs != 0 {
+                        result = lhs / rhs
                     }
                     else {
                         result = 0
                     }
-                    
-                case .mod:
-                    result = firstNumber % Int(currentNumber)!
+                    opSymbol = "÷"
+                
                 case nil:
                     break
             }
             
-            isFirstNumber = true
-            firstNumber = result
-            currentNumber = "0"
-            
+            currentNumber = String(result)
+            firstNumber = currentNumber
+            log = "\(lhs.stringWithoutTrailingZeros) \(opSymbol) \(rhs.stringWithoutTrailingZeros)"
         }
-        isShowingNumber = true
+        isShowingFirstNumber = true
+        isCalculated = true
+        op = nil
+        isHavingNumber = false
     }
     
     public func changeSign() {
-        currentNumber = String(-Int(currentNumber)!)
+        log = "±(\(currentNumber))"
+        currentNumber = String(-Double(currentNumber)!)
+        isShowingFirstNumber = false
+        isHavingNumber = true
+    }
+    
+    public func changeToPercentage() {
+        if !isCalculated {
+            calculate()
+        }
+        log = "\(currentNumber)%"
+        currentNumber = String(0.01 * Double(currentNumber)!)
+        isShowingFirstNumber = false
+        isHavingNumber = true
     }
     
     public func allClean() {
         currentNumber = "0"
+        firstNumber = "0"
+        op = nil
         isFirstNumber = true
-        firstNumber = 0
-        isShowingNumber = false
+        isShowingFirstNumber = false
+        isCalculated = true
+        isHavingNumber = false
+        log = ""
     }
     
+    public func dot() {
+        if isShowingFirstNumber {
+            currentNumber = "0."
+        }
+
+        else if !currentNumber.contains(".") {
+            currentNumber.append(".")
+        }
+        
+        isShowingFirstNumber = false
+        
+        isHavingNumber = true
+        
+        if op != nil {
+            isCalculated = false
+        }
+    }
 }

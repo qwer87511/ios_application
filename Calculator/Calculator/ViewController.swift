@@ -12,6 +12,7 @@ class ViewController: UIViewController {
 
     var model: CalculatorModel = CalculatorModel();
     @IBOutlet weak var result: UILabel!
+    @IBOutlet weak var operationLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +27,7 @@ class ViewController: UIViewController {
     @IBAction func clickEqual(_ sender: UIButton) {
         model.calculate()
         result.text = model.showingNumber
+        operationLabel.text = model.log
     }
     
     @IBAction func clickOperator(_ sender: UIButton) {
@@ -38,26 +40,35 @@ class ViewController: UIViewController {
             model.setOperation(op: .mul)
         case 3:
             model.setOperation(op: .div)
-        case 4:
-            model.setOperation(op: .mod)
         default:
             break;
         }
         result.text = model.showingNumber
+        operationLabel.text = model.log
     }
     
     @IBAction func clickSign(_ sender: Any) {
         model.changeSign()
+        result.text = model.showingNumber
+        operationLabel.text = model.log
+    }
+    
+    @IBAction func clickPercentage(_ sender: Any) {
+        model.changeToPercentage()
+        result.text = model.showingNumber
+        operationLabel.text = model.log
     }
     
     @IBAction func clickDot(_ sender: Any) {
-        
+        model.dot()
+        result.text = model.showingNumber
     }
     
     
     @IBAction func clickAllClean(_ sender: Any) {
         model.allClean()
         result.text = model.showingNumber
+        operationLabel.text = model.log
     }
     
 }
