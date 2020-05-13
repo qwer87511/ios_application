@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    var koreafish: [String] = ["國瑜選總統", "國瑜帥氣側臉"]
+    var photos: [String] = ["Show Lo", "Butterfly"]
     @State private var cornerRadius: CGFloat = 200
     @State private var opacity: Double = 1.0
     @State private var blur: CGFloat = 0
@@ -21,11 +21,11 @@ struct ContentView: View {
     @State private var selectIndex: Int = 0
     var body: some View {
         VStack {
-            Text(koreafish[selectIndex])
+            Text(photos[selectIndex])
                 .bold()
                 .font(.system(size: 30))
                 .padding(.top, 40.0)
-            Image(koreafish[selectIndex])
+            Image(photos[selectIndex])
                 .resizable()
                 .scaledToFit()
                 .clipped()
@@ -39,51 +39,60 @@ struct ContentView: View {
                 .rotationEffect(Angle(degrees: rotation))
                 .shadow(radius: shadow)
                 .cornerRadius(cornerRadius)
+            Picker(selection: $selectIndex, label: Text("selector")) {
+                ForEach(0 ..< photos.count) { (index) in
+                    Text(self.photos[index])
+                }
+            }
+                .clipped()
+                .padding(.vertical)
+                .labelsHidden()
+                .frame(width: 200, height: 100)
             VStack {
                 HStack {
-                    Text("國瑜Bang不見")
+                    Text("opacity")
                         .frame(width: 150)
                     Slider(value: $opacity, in: 0...1)
                     Spacer()
                 }
                 HStack {
-                    Text("國瑜真亮彩")
+                    Text("contrast")
                         .frame(width: 150)
                     Slider(value: $contrast, in: 0.1...3)
                     Spacer()
                 }
                 HStack {
-                    Text("國瑜Bang圓了")
+                    Text("cornerRadius")
                         .frame(width: 150)
                     Slider(value: $cornerRadius, in: 0...200, step: 1)
                     Spacer()
                 }
                 HStack {
-                    Text("國瑜Bang模糊")
+                    Text("blur")
                         .frame(width: 150)
                     Slider(value: $blur, in: 0...10)
                     Spacer()
                 }
                 HStack {
-                    Text("國瑜會發光")
+                    Text("brightness")
                         .frame(width: 150)
                     Slider(value: $brightness, in: 0...1)
                     Spacer()
                 }
                 HStack {
-                    Text("國瑜是黑白")
+                    Text("grayscale")
                         .frame(width: 150)
                     Slider(value: $grayscale, in: 0...0.9)
                     Spacer()
                 }
                 HStack {
-                    Text("國瑜轉轉轉")
+                    Text("rotation")
                         .frame(width: 150)
                     Slider(value: $rotation, in: 0...360, step: 1)
                     Spacer()
                 }
                 HStack {
-                    Text("國瑜浮起來")
+                    Text("shadow")
                         .frame(width: 150)
                     Slider(value: $shadow, in: 0...50)
                     Spacer()
@@ -100,22 +109,14 @@ struct ContentView: View {
                 self.shadow = CGFloat.random(in: 0...50)
                 self.selectIndex = Int.random(in: 0...1)
             }) {
-                Text("Random 國瑜")
+                Text("random")
                     .font(.system(size: 25))
                     .foregroundColor(.white)
                     .frame(width: 250, height: 50)
             }
             .background(Color.blue)
             .cornerRadius(/*@START_MENU_TOKEN@*/10.0/*@END_MENU_TOKEN@*/)
-            Picker(selection: $selectIndex, label: Text("韓總出任務")) {
-                ForEach(0 ..< koreafish.count) { (index) in
-                    Text(self.koreafish[index])
-                }
-            }
-                .clipped()
-            .padding(.vertical)
-            .labelsHidden()
-            .frame(width: 200, height: 100)
+            
        }
         .padding()
         
