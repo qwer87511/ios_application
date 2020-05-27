@@ -15,6 +15,8 @@ struct ContentView: View {
     var body: some View {
         VStack{
             TextView()
+            .border(Color.black, width: 5)
+            
             Button(action: {
                 self.showingSheet = true
             }) {
