@@ -10,14 +10,14 @@ import SwiftUI
 
 struct ChampionDetail: View {
     let champion: Champion
-    
     @State var championImage: Image = Image(systemName: "person")
-    
     func loadImage() {
-        URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/\(champion.name)_0.jpg")!) {
+        URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/\(champion.id)_0.jpg")!) {
             (data, response , error) in
             if let data = data, let image = UIImage(data: data) {
-                self.championImage = Image(uiImage: image)
+                DispatchQueue.main.async{
+                    self.championImage = Image(uiImage: image)
+                }
             }
             else {
                 print("load fail")
@@ -53,6 +53,6 @@ struct ChampionDetail: View {
 
 struct ChampionDetail_Previews: PreviewProvider {
     static var previews: some View {
-        ChampionDetail(champion: Champion(name: "Alistar", title: "the Sad Mummy", blurb: "Legend claims that Amumu is a lonely and melancholy soul from ancient Shurima, roaming the world in search of a friend. Doomed by an ancient curse to remain alone forever, his touch is death, his affection ruin. Those who claim to have seen him describe...", imageName: "Alistar.png"))
+        ChampionDetail(champion: Champion(name: "Alistar", id: "Alistar",title: "the Sad Mummy", blurb: "Legend claims that Amumu is a lonely and melancholy soul from ancient Shurima, roaming the world in search of a friend. Doomed by an ancient curse to remain alone forever, his touch is death, his affection ruin. Those who claim to have seen him describe...",image: ChampionImg(full: "Alistar.png",sprite: "champion0.png")))
     }
 }

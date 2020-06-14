@@ -14,7 +14,7 @@ struct ChampionGrid: View {
     @State var picture: Image = Image(systemName: "person")
     
     func loadImage() {
-        URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/10.10.3216176/img/champion/\(champion.imageName)")!) {
+        URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/10.10.3216176/img/champion/\(champion.image.full)")!) {
             (data, response , error) in
             if let data = data, let image = UIImage(data: data) {
                 self.picture = Image(uiImage: image)
@@ -31,14 +31,16 @@ struct ChampionGrid: View {
                 .renderingMode(.original)
                 .resizable()
                 .scaledToFit()
-                //.frame(width:80, height:80)
+                .frame(width:80, height:80)
                 //.frame(alignment: .top)
                 //.clipped()
                 .padding()
             Text(champion.name)
                 .foregroundColor(Color.gray)
-                .font(.title)
-        }
+                .font(.subheadline).lineLimit(1)
+                .frame(width:80)
+            }
+    .fixedSize()
         .onAppear() {
             self.loadImage()
         }
@@ -47,6 +49,6 @@ struct ChampionGrid: View {
 
 struct ChampionGrid_Previews: PreviewProvider {
     static var previews: some View {
-        ChampionGrid(champion: Champion(name: "Alistar", title: "the Sad Mummy", blurb: "Legend claims that Amumu is a lonely and melancholy soul from ancient Shurima, roaming the world in search of a friend. Doomed by an ancient curse to remain alone forever, his touch is death, his affection ruin. Those who claim to have seen him describe...", imageName: "Alistar.png"))
+        ChampionGrid(champion: Champion(name: "Alistar", id: "Alistar",title: "the Sad Mummy", blurb: "Legend claims that Amumu is a lonely and melancholy soul from ancient Shurima, roaming the world in search of a friend. Doomed by an ancient curse to remain alone forever, his touch is death, his affection ruin. Those who claim to have seen him describe...",image: ChampionImg(full: "Alistar.png",sprite: "champion0.png")))
     }
 }

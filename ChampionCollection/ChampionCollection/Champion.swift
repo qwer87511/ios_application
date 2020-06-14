@@ -8,14 +8,19 @@
 
 import Foundation
 
-public struct Champions {
-    
+public struct Champions: Decodable {
+    let data:[String:Champion]
 }
 
-public struct Champion {
+public struct Champion:Decodable {
     var name: String
+    var id: String
     var title: String
     var blurb: String
-    var imageName: String
+    let image:ChampionImg
 }
 
+public struct ChampionImg:Decodable{
+    let full:String
+    let sprite:String
+}
