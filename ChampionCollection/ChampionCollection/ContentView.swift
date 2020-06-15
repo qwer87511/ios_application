@@ -24,7 +24,7 @@ struct ContentView: View {
                     Text("Props")
             }.tag(2)
 
-            ChampionsListView()
+            RunesListView()
                 .tabItem() {
                     Image(systemName: "moon.circle.fill")
                     Text("Runes")
