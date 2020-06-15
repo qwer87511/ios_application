@@ -10,10 +10,32 @@ import SwiftUI
 
 struct ItemColView: View {
     var item:Item
+    @State var picture: Image = Image(systemName: "person")
+    func loadItem(){
+        if let url = URL(string: "https://ddragon.leagueoflegends.com/cdn/10.12.1/img/item/\(item.image.full)"){
+            URLSession.shared.dataTask(with: url) { (data, response , error) in
+                if let data = data, let image = UIImage(data: data) {
+                   DispatchQueue.main.async{
+                        self.picture = Image(uiImage: image)
+                    }
+                }
+                else {
+                    print("load fail")
+                }
+            }.resume()
+        }
+    }
     var body: some View {
         HStack{
+            picture
+            .renderingMode(.original)
+            .resizable()
+            .scaledToFit()
+            .frame(width:80, height:80)
             Text(item.name)
-        }.frame(height: 80)
+        }.frame(height: 80).onAppear(){
+            self.loadItem()
+        }
     }
 }
 

@@ -18,7 +18,10 @@ struct ItemListView: View {
                 let decoder = JSONDecoder()
                 if let data = data, let items = try? decoder.decode(ItemData.self, from: data) {
                     DispatchQueue.main.async{
-                        for (key,value) in items.data{
+                        let sorted_items = items.data.sorted{
+                            $0.key<$1.key
+                        }
+                        for (key,value) in sorted_items{
                             self.items.append(value)
                         }
                     }

@@ -8,7 +8,7 @@
 
 import Foundation
 struct ItemData:Decodable{
-    let data:[String:Item]
+    var data:[String:Item]
 }
 struct Item:Decodable {
     let name:String
