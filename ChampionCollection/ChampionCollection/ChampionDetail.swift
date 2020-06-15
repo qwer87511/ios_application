@@ -85,7 +85,8 @@ struct ChampionDetail: View {
                     SkillsView(champion: self.championData)
                 }
                 else if selectorIndex == 2 {
-                    PropsView()
+                    //PropsView()
+                    ItemListView()
                 }
                 else if selectorIndex == 3 {
                     SkinsView(skinImage: $championImage, champion: self.champion)
