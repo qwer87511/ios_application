@@ -27,7 +27,7 @@ struct SumsListView: View {
                         }
                         self.colSums = []
                         _ = (0..<self.sums.count).publisher
-                            .collect(2)
+                            .collect(3)
                             .collect()
                             .sink(receiveValue: {self.colSums=$0})
                     }
@@ -43,7 +43,7 @@ struct SumsListView: View {
                            ForEach(0..<self.colSums.count, id:\.self){col in
                                HStack{
                                    ForEach(self.colSums[col], id:\.self) { sum in
-                                       SumGrid(sum: self.sums[sum])
+                                    SumGrid(sum: self.sums[sum])
                                    }
                                }
                            }

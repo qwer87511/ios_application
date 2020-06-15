@@ -10,8 +10,34 @@ import SwiftUI
 
 struct SumGrid: View {
     var sum:Summoner
+    @State var picture: Image = Image(systemName: "person")
+    
+    func loadImage() {
+        URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/10.12.1/img/spell/\(sum.image.full)")!) {
+            (data, response , error) in
+            if let data = data, let image = UIImage(data: data) {
+                self.picture = Image(uiImage: image)
+            }
+            else {
+                print("load fail")
+            }
+        }.resume()
+    }
+    
     var body: some View {
-        Text(sum.name)
+        VStack{
+            picture
+            .renderingMode(.original)
+            .resizable()
+            .scaledToFit()
+            .frame(width:80, height:80)
+            //.frame(alignment: .top)
+            //.clipped()
+            .padding()
+            Text(sum.name)
+        }.onAppear(){
+            self.loadImage()
+        }
     }
 }
 //
