@@ -18,7 +18,7 @@ struct ContentView: View {
                     Text("Champions")
             }.tag(1)
 
-            ChampionsListView()
+            ItemListView()
                 .tabItem() {
                     Image(systemName: "archivebox")
                     Text("Props")
