@@ -13,12 +13,12 @@ struct ChampionsListView: View {
     @State var champions = [Champion]()
     
     func loadChampions() {
-        let urlStr = "https://ddragon.leagueoflegends.com/cdn/10.10.3216176/data/zh_TW/champion.json"
+        let urlStr = "https://ddragon.leagueoflegends.com/cdn/10.10.3216176/data/en_US/champion.json"
         if let url = URL(string: urlStr) {
             URLSession.shared.dataTask(with: url) { (data, response , error) in
                 let decoder = JSONDecoder()
                 if let data = data, let champs = try? decoder.decode(Champions.self, from: data) {
-                    DispatchQueue.main.async{
+                    DispatchQueue.main.async {
                         let sorted_champs = champs.data.sorted{
                             $0.key<$1.key
                         }
@@ -57,28 +57,33 @@ struct ChampionsListView: View {
     let columnCount = 3
     	
     var body: some View {
-        NavigationView {
-            ScrollView {
-                VStack {
-                    ForEach(Array(stride(from: 0, to: self.champions.count, by: columnCount)), id: \.self) { index in
-                        HStack {
-                            ForEach(index..<min(index + self.columnCount, self.champions.count)) { championIndex in
-                                NavigationLink(destination: ChampionDetail(champion: self.champions[championIndex])) {
-                                    ChampionGrid(champion: self.champions[championIndex])
+        
+        //GeometryReader { geo in
+        
+            NavigationView {
+                ScrollView {
+                    VStack {
+                        ForEach(Array(stride(from: 0, to: self.champions.count, by: self.columnCount)), id: \.self) { index in
+                            HStack {
+                                ForEach(index..<min(index + self.columnCount, self.champions.count)) { championIndex in
+                                    NavigationLink(destination: ChampionDetail(champion: self.champions[championIndex])) {
+                                        ChampionGrid(champion: self.champions[championIndex])
+                                    }
                                 }
                             }
+                            
                         }
                     }
+                    .padding()
                 }
-                .padding()
+                .navigationBarTitle("Champions")
             }
-            .navigationBarTitle("Champions")
-        }
-        .onAppear() {
-            if self.champions.count == 0 {
-                self.loadChampions()
+            .onAppear() {
+                if self.champions.count == 0 {
+                    self.loadChampions()
+                }
             }
-        }
+        //}
     }
 }
 		

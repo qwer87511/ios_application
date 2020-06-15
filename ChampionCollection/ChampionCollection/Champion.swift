@@ -9,18 +9,33 @@
 import Foundation
 
 public struct Champions: Decodable {
-    let data:[String:Champion]
+    let data: [String:Champion]
 }
 
-public struct Champion:Decodable {
+public struct Champion: Decodable {
     var name: String
     var id: String
     var title: String
     var blurb: String
-    let image:ChampionImg
+    let image: APIImg
 }
 
-public struct ChampionImg:Decodable{
-    let full:String
-    let sprite:String
+public struct APIImg: Decodable {
+    let full: String
+    let sprite: String
+}
+
+public struct Spell: Decodable {
+    let id: String
+    let name: String
+    let image: APIImg
+}
+
+public struct ChampionData: Decodable {
+    var name: String
+    var id: String
+    var title: String
+    var blurb: String
+    let image: APIImg
+    let spells: [Spell]
 }

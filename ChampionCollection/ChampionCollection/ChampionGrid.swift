@@ -47,8 +47,8 @@ struct ChampionGrid: View {
     }
 }
 
-struct ChampionGrid_Previews: PreviewProvider {
-    static var previews: some View {
-        ChampionGrid(champion: Champion(name: "Alistar", id: "Alistar",title: "the Sad Mummy", blurb: "Legend claims that Amumu is a lonely and melancholy soul from ancient Shurima, roaming the world in search of a friend. Doomed by an ancient curse to remain alone forever, his touch is death, his affection ruin. Those who claim to have seen him describe...",image: ChampionImg(full: "Alistar.png",sprite: "champion0.png")))
-    }
-}
+//struct ChampionGrid_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ChampionGrid(champion: Champion(name: "Alistar", id: "Alistar",title: "the Sad Mummy", blurb: "Legend claims that Amumu is a lonely and melancholy soul from ancient Shurima, roaming the world in search of a friend. Doomed by an ancient curse to remain alone forever, his touch is death, his affection ruin. Those who claim to have seen him describe...",image: Img(full: "Alistar.png",sprite: "champion0.png")))
+//    }
+//}

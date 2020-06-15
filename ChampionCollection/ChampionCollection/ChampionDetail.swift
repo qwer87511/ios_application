@@ -10,12 +10,14 @@ import SwiftUI
 
 struct ChampionDetail: View {
     let champion: Champion
+    @State var championData: ChampionData?
     @State var championImage: Image = Image(systemName: "person")
+    
     func loadImage() {
         URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/\(champion.id)_0.jpg")!) {
             (data, response , error) in
             if let data = data, let image = UIImage(data: data) {
-                DispatchQueue.main.async{
+                DispatchQueue.main.async {
                     self.championImage = Image(uiImage: image)
                 }
             }
@@ -25,34 +27,196 @@ struct ChampionDetail: View {
         }.resume()
     }
     
+    func loadChampionData() {
+        
+        URLSession.shared.dataTask(with: URL(string: "http://ddragon.leagueoflegends.com/cdn/10.12.1/data/en_US/champion/\(champion.id).json")!) {
+            (data, response , error) in
+            let decoder = JSONDecoder()
+            if let data = data, let c = try? decoder.decode(ChampionData.self, from: data) {
+                DispatchQueue.main.async {
+                    self.championData = c
+                }
+            }
+            else {
+                print("load fail")
+            }
+        }.resume()
+    }
+    
+    @State private var selectorIndex = 0
+    @State private var numbers = ["One","Two","Three"]
+
     var body: some View {
         VStack {
-            ZStack {
-                championImage
-                    .resizable()
-                    .scaledToFill()
-                    //.frame(width:80, height:80)
-                    .clipped()
-                    .padding()
-                Text(champion.name)
-                .foregroundColor(.gray)
-                .font(Font.system(size: 50, weight:.heavy))
-                .frame(width: 300, height: 300, alignment: .center)
+            GeometryReader { metrics in
+                ZStack {
+                    self.championImage
+                        .resizable()
+                        .scaledToFit()
+                        //.frame(width:80, height:80)
+                        .clipped()
+                        .padding()
+                    Text(self.champion.name)
+                        .foregroundColor(.gray)
+                        .font(Font.system(size: 50, weight:.heavy))
+                        .frame(width: 300, height: 300, alignment: .center)
+                }
+                .frame(height: metrics.size.height * 0.4, alignment: .center)
             }
-            .frame(alignment: .top)
+                
+            Picker("Numbers", selection: self.$selectorIndex) {
+                
+//                    ForEach(1 ..< self.numbers.count) { index in
+//                        Text(self.numbers[index]).tag(index)
+//                    }
+                Text("Profile").tag(0)
+                Text("Skills").tag(1)
+                Text("Props").tag(2)
+                Text("Skins").tag(3)
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            .padding(.horizontal, 24)
             
-            Text("other").frame(height: 300)
+            //Section {
+                if selectorIndex == 0 {
+                    ProfileView(text: self.champion.blurb)
+                }
+                else if selectorIndex == 1 {
+                    SkillsView(champion: self.championData)
+                }
+                else if selectorIndex == 2 {
+                    PropsView()
+                }
+                else if selectorIndex == 3 {
+                    SkinsView(skinImage: $championImage, champion: self.champion)
+                }
+            //}
             
-            // segment control
+            
         }
         .onAppear() {
             self.loadImage()
+            self.loadChampionData()
+        }
+    }
+    
+    
+}
+
+struct ProfileView: View {
+    let text: String
+    
+    var body: some View {
+        Text(text)
+            .foregroundColor(.gray)
+            .font(Font.system(size: 20, weight:.heavy))
+            .frame(width: 300, height: 300, alignment: .center)
+    }
+}
+
+struct SkillsView: View {
+    @State var skillsImage = [
+        Image(systemName: "person"),Image(systemName: "person"),Image(systemName: "person"),Image(systemName: "person")
+    ]
+    let qwer = ["Q", "W", "E", "R"]
+//    var skillName: String
+//    var skillDescription: String
+    var champion: ChampionData?
+    
+    func loadImage() {
+        if let data = champion {
+            for i in 0..<4 {
+                URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/10.12.1/img/spell/\(data.spells[i].image.full)")!) {
+                    (data, response , error) in
+                    if let data = data, let image = UIImage(data: data) {
+                        DispatchQueue.main.async{
+                            self.skillsImage[i] = Image(uiImage: image)
+                        }
+                    }
+                    else {
+                        print("load skill api fail")
+                    }
+                }.resume()
+            }
+        }
+    }
+    
+    var body: some View {
+        VStack {
+            List(0..<4) { i in
+                HStack {
+                    self.skillsImage[i]
+                        .resizable()
+                        .scaledToFill()
+                        //.frame(width:80, height:80)
+                        .clipped()
+                        .padding()
+                    VStack {
+                        Text("\(self.champion?.name ?? "") \(self.qwer[i])")
+                            .foregroundColor(.gray)
+                            .font(Font.system(size: 50, weight:.heavy))
+                            .frame(width: 300, height: 300, alignment: .center)
+                        Text("\(self.champion?.name ?? "") \(self.qwer[i]) description")
+                            .foregroundColor(.gray)
+                            .font(Font.system(size: 30, weight:.heavy))
+                            .frame(width: 300, height: 300, alignment: .center)
+                    }
+                }
+            }
+            .onAppear() {
+                self.loadImage()
+            }
         }
     }
 }
 
-struct ChampionDetail_Previews: PreviewProvider {
-    static var previews: some View {
-        ChampionDetail(champion: Champion(name: "Alistar", id: "Alistar",title: "the Sad Mummy", blurb: "Legend claims that Amumu is a lonely and melancholy soul from ancient Shurima, roaming the world in search of a friend. Doomed by an ancient curse to remain alone forever, his touch is death, his affection ruin. Those who claim to have seen him describe...",image: ChampionImg(full: "Alistar.png",sprite: "champion0.png")))
+struct PropsView: View {
+    var body: some View {
+        List {
+            Text("0")
+            Text("1")
+        }
     }
 }
+
+struct SkinsView: View {
+    @Binding var skinImage: Image// = Image(systemName: "person")
+    let champion: Champion
+    
+    func loadImage(_ i: Int) {
+        
+        URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/\(champion.name)_\(i).jpg")!) {
+            (data, response , error) in
+            if let data = data, let image = UIImage(data: data) {
+                DispatchQueue.main.async {
+                    self.skinImage = Image(uiImage: image)
+                }
+            }
+            else {
+                print("load skin fail")
+            }
+        }.resume()
+    }
+    
+    var body: some View {
+        VStack {
+            List(0..<2) { (i) in
+                Text("skin \(i)")
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    self.loadImage(i)
+                }
+            }
+        }
+        .onAppear() {
+            self.loadImage(0)
+        }
+    }
+}
+
+
+//struct ChampionDetail_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ChampionDetail(champion: Champion(name: "Alistar", id: "Alistar",title: "the Sad Mummy", blurb: "Legend claims that Amumu is a lonely and melancholy soul from ancient Shurima, roaming the world in search of a friend. Doomed by an ancient curse to remain alone forever, his touch is death, his affection ruin. Those who claim to have seen him describe...",image: Img(full: "Alistar.png",sprite: "champion0.png")))
+//    }
+//}
