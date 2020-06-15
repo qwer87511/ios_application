@@ -25,7 +25,7 @@ struct ItemListView: View {
                             self.items.append(value)
                         }
                     }
-                    print(self.items)
+                    
                 }
             }.resume()
         }

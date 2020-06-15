@@ -30,7 +30,7 @@ struct ContentView: View {
                     Text("Runes")
             }.tag(3)
 
-            ChampionsListView()
+            SumsListView()
                 .tabItem() {
                     Image(systemName: "bolt.circle.fill")
                     Text("Sum's S kills")
