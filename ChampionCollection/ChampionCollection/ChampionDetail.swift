@@ -37,7 +37,7 @@ struct ChampionDetail: View {
             let decoder = JSONDecoder()
             if let data = data, let c = try? decoder.decode(ChampionsData.self, from: data) {
                 DispatchQueue.main.async {
-                    self.championData = c.championData[self.champion.name]
+                    self.championData = c.data[self.champion.name]
                 }
                 self.isLoadedChampions = true
             }

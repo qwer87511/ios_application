@@ -32,7 +32,7 @@ public struct Spell: Decodable {
 }
 
 public struct ChampionsData: Decodable {
-    let championData: [String: ChampionData]
+    let data: [String: ChampionData]
 }
 
 public struct ChampionData: Decodable {
