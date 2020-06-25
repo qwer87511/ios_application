@@ -11,13 +11,13 @@ import SwiftUI
 struct ChampionGrid: View {
     
     let champion: Champion
-    @State var picture: Image = Image(systemName: "person")
+    @State var image: Image = Image(systemName: "person")
     
     func loadImage() {
         URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/10.10.3216176/img/champion/\(champion.image.full)")!) {
             (data, response , error) in
             if let data = data, let image = UIImage(data: data) {
-                self.picture = Image(uiImage: image)
+                self.image = Image(uiImage: image)
             }
             else {
                 print("load fail")
@@ -27,7 +27,7 @@ struct ChampionGrid: View {
     
     var body: some View {
         VStack {
-            picture
+            image
                 .renderingMode(.original)
                 .resizable()
                 .scaledToFit()
@@ -47,8 +47,8 @@ struct ChampionGrid: View {
     }
 }
 
-//struct ChampionGrid_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ChampionGrid(champion: Champion(name: "Alistar", id: "Alistar",title: "the Sad Mummy", blurb: "Legend claims that Amumu is a lonely and melancholy soul from ancient Shurima, roaming the world in search of a friend. Doomed by an ancient curse to remain alone forever, his touch is death, his affection ruin. Those who claim to have seen him describe...",image: Img(full: "Alistar.png",sprite: "champion0.png")))
-//    }
-//}
+struct ChampionGrid_Previews: PreviewProvider {
+    static var previews: some View {
+        ChampionGrid(champion: Champion(name: "Alistar", id: "Alistar",title: "the Sad Mummy", blurb: "Legend claims that Amumu is a lonely and melancholy soul from ancient Shurima, roaming the world in search of a friend. Doomed by an ancient curse to remain alone forever, his touch is death, his affection ruin. Those who claim to have seen him describe...",image: APIImg(full: "Alistar.png",sprite: "champion0.png")))
+    }
+}

@@ -12,6 +12,8 @@ struct ChampionDetail: View {
     let champion: Champion
     @State var championData: ChampionData?
     @State var championImage: Image = Image(systemName: "person")
+    @State var isLoadedChampions = false
+    @State var isLoadedImage = false
     
     func loadImage() {
         URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/\(champion.id)_0.jpg")!) {
@@ -20,25 +22,27 @@ struct ChampionDetail: View {
                 DispatchQueue.main.async {
                     self.championImage = Image(uiImage: image)
                 }
+                self.isLoadedImage = true
             }
             else {
-                print("load fail")
+                print("load champion image fail")
             }
         }.resume()
     }
     
     func loadChampionData() {
         
-        URLSession.shared.dataTask(with: URL(string: "http://ddragon.leagueoflegends.com/cdn/10.12.1/data/en_US/champion/\(champion.id).json")!) {
+        URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/10.12.1/data/en_US/champion/\(champion.id).json")!) {
             (data, response , error) in
             let decoder = JSONDecoder()
-            if let data = data, let c = try? decoder.decode(ChampionData.self, from: data) {
+            if let data = data, let c = try? decoder.decode(ChampionsData.self, from: data) {
                 DispatchQueue.main.async {
-                    self.championData = c
+                    self.championData = c.championData[self.champion.name]
                 }
+                self.isLoadedChampions = true
             }
             else {
-                print("load fail")
+                print("load champion data detail fail")
             }
         }.resume()
     }
@@ -51,6 +55,7 @@ struct ChampionDetail: View {
             GeometryReader { metrics in
                 ZStack {
                     self.championImage
+                        
                         .resizable()
                         .scaledToFit()
                         //.frame(width:80, height:80)
@@ -96,8 +101,12 @@ struct ChampionDetail: View {
             
         }
         .onAppear() {
-            self.loadImage()
-            self.loadChampionData()
+            if !self.isLoadedChampions {
+                self.loadChampionData()
+            }
+            if !self.isLoadedImage {
+                self.loadImage()
+            }
         }
     }
     
@@ -123,6 +132,7 @@ struct SkillsView: View {
 //    var skillName: String
 //    var skillDescription: String
     var champion: ChampionData?
+    @State var isLoadedImages = false
     
     func loadImage() {
         if let data = champion {
@@ -133,6 +143,7 @@ struct SkillsView: View {
                         DispatchQueue.main.async{
                             self.skillsImage[i] = Image(uiImage: image)
                         }
+                        self.isLoadedImages = true
                     }
                     else {
                         print("load skill api fail")
@@ -165,7 +176,9 @@ struct SkillsView: View {
                 }
             }
             .onAppear() {
-                self.loadImage()
+                if !self.isLoadedImages {
+                    self.loadImage()
+                }
             }
         }
     }
@@ -183,7 +196,7 @@ struct PropsView: View {
 struct SkinsView: View {
     @Binding var skinImage: Image// = Image(systemName: "person")
     let champion: Champion
-    
+    @State var isloadedImages = false
     func loadImage(_ i: Int) {
         
         URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/\(champion.name)_\(i).jpg")!) {
@@ -210,7 +223,10 @@ struct SkinsView: View {
             }
         }
         .onAppear() {
-            self.loadImage(0)
+            
+            if !self.isloadedImages {
+                self.loadImage(0)
+            }
         }
     }
 }

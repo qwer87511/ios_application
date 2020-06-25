@@ -58,11 +58,11 @@ struct ChampionsListView: View {
     	
     var body: some View {
         
-        //GeometryReader { geo in
+        GeometryReader { geo in
         
             NavigationView {
-                ScrollView {
-                    VStack {
+                ScrollView(.vertical, showsIndicators: true) {
+                    VStack(alignment: .leading) {
                         ForEach(Array(stride(from: 0, to: self.champions.count, by: self.columnCount)), id: \.self) { index in
                             HStack {
                                 ForEach(index..<min(index + self.columnCount, self.champions.count)) { championIndex in
@@ -70,20 +70,24 @@ struct ChampionsListView: View {
                                         ChampionGrid(champion: self.champions[championIndex])
                                     }
                                 }
+                                Spacer()
                             }
-                            
                         }
                     }
                     .padding()
+                    .frame(width: geo.size.width)
                 }
                 .navigationBarTitle("Champions")
             }
+    
             .onAppear() {
-                if self.champions.count == 0 {
+                if self.champions.isEmpty {
                     self.loadChampions()
                 }
+                
             }
-        //}
+            
+        }
     }
 }
 		

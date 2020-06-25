@@ -9,7 +9,7 @@
 import Foundation
 
 public struct Champions: Decodable {
-    let data: [String:Champion]
+    let data: [String: Champion]
 }
 
 public struct Champion: Decodable {
@@ -17,18 +17,22 @@ public struct Champion: Decodable {
     var id: String
     var title: String
     var blurb: String
-    let image: APIImg
+    var image: APIImg
 }
 
 public struct APIImg: Decodable {
-    let full: String
-    let sprite: String
+    var full: String
+    var sprite: String
 }
 
 public struct Spell: Decodable {
-    let id: String
-    let name: String
-    let image: APIImg
+    var id: String
+    var name: String
+    var image: APIImg
+}
+
+public struct ChampionsData: Decodable {
+    let championData: [String: ChampionData]
 }
 
 public struct ChampionData: Decodable {
@@ -36,6 +40,12 @@ public struct ChampionData: Decodable {
     var id: String
     var title: String
     var blurb: String
-    let image: APIImg
-    let spells: [Spell]
+    var image: APIImg
+    var spells: [Spell]
+    var skins: [Skin]
+}
+
+public struct Skin: Decodable {
+    var id: Int
+    var name: String
 }
