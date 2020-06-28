@@ -10,7 +10,7 @@ import SwiftUI
 
 struct ChampionDetail: View {
     let champion: Champion
-    @State var championData: ChampionData?
+    @State var championInfo: ChampionInfo?
     @State var championImage: Image = Image(systemName: "person")
     @State var isLoadedChampions = false
     @State var isLoadedImage = false
@@ -35,9 +35,9 @@ struct ChampionDetail: View {
         URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/10.12.1/data/en_US/champion/\(champion.id).json")!) {
             (data, response , error) in
             let decoder = JSONDecoder()
-            if let data = data, let c = try? decoder.decode(ChampionsData.self, from: data) {
+            if let data = data, let c = try? decoder.decode(ChampionInfoData.self, from: data) {
                 DispatchQueue.main.async {
-                    self.championData = c.data[self.champion.name]
+                    self.championInfo = c.data[self.champion.name]
                 }
                 self.isLoadedChampions = true
             }
@@ -87,11 +87,10 @@ struct ChampionDetail: View {
                     ProfileView(text: self.champion.blurb)
                 }
                 else if selectorIndex == 1 {
-                    SkillsView(champion: self.championData)
+                    SkillsView(champion: self.championInfo)
                 }
                 else if selectorIndex == 2 {
-                    //PropsView()
-                    ItemListView()
+                    PropsView(recommends: self.championInfo!.recommended)
                 }
                 else if selectorIndex == 3 {
                     SkinsView(skinImage: $championImage, champion: self.champion)
@@ -107,7 +106,7 @@ struct ChampionDetail: View {
             if !self.isLoadedImage {
                 self.loadImage()
             }
-        }
+        }.disabled(!self.isLoadedChampions)
     }
     
     
@@ -129,21 +128,57 @@ struct SkillsView: View {
         Image(systemName: "person"),Image(systemName: "person"),Image(systemName: "person"),Image(systemName: "person")
     ]
     let qwer = ["Q", "W", "E", "R"]
-//    var skillName: String
-//    var skillDescription: String
-    var champion: ChampionData?
+    let champion: ChampionInfo?
     @State var isLoadedImages = false
     
     func loadImage() {
-        if let data = champion {
-            for i in 0..<4 {
-                URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/10.12.1/img/spell/\(data.spells[i].image.full)")!) {
+        for i in 0..<4 {
+            URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/10.12.1/img/spell/\(self.champion!.spells[i].image.full)")!) {
+                (data, response , error) in
+                if let data = data, let image = UIImage(data: data) {
+                    DispatchQueue.main.async{
+                        self.skillsImage[i] = Image(uiImage: image)
+                    }
+                    self.isLoadedImages = true
+                }
+                else {
+                    print("load skill api fail")
+                }
+            }.resume()
+        }
+    }
+    
+    var body: some View {
+        VStack{
+            List(0..<self.champion!.spells.count, id:\.self){index in
+                HStack{
+                    self.skillsImage[index].resizable().scaledToFit().clipped()
+                        .padding().frame(width:100,height:100)
+                    Text("\(self.qwer[index]) \(self.champion!.spells[index].name)")
+                }
+            }
+        }.onAppear(){
+            self.loadImage()
+        }
+    }
+}
+
+struct PropsView: View {
+    var recommend:Recommend
+    @State var images = [String:[String:Image]]()
+    init(recommends:[Recommend]) {
+        let index = recommends.firstIndex{ (r) -> Bool in
+            return r.mode == "CLASSIC"
+        }!
+        self.recommend = recommends[index]
+    }
+    func loadImages(){
+        for block in self.recommend.blocks{
+            for item in block.items{
+                URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/10.12.1/img/item/\(item.id).png")!) {
                     (data, response , error) in
                     if let data = data, let image = UIImage(data: data) {
-                        DispatchQueue.main.async{
-                            self.skillsImage[i] = Image(uiImage: image)
-                        }
-                        self.isLoadedImages = true
+                        self.images[block.type]?[item.id] = Image(uiImage: image)
                     }
                     else {
                         print("load skill api fail")
@@ -151,46 +186,50 @@ struct SkillsView: View {
                 }.resume()
             }
         }
+        
     }
-    
+    func initImages(){
+        for block in self.recommend.blocks{
+            for item in block.items{
+                if self.images[block.type] != nil{
+                    self.images[block.type]?[item.id] = Image(systemName: "person")
+                }else{
+                    self.images[block.type] = [String:Image]()
+                    self.images[block.type]?[item.id] = Image(systemName: "person")
+                }
+            }
+        }
+    }
+    func checkImage(images: [Image]) -> Bool{
+        return images != nil
+    }
     var body: some View {
-        VStack {
-            List(0..<4) { i in
-                HStack {
-                    self.skillsImage[i]
-                        .resizable()
-                        .scaledToFill()
-                        //.frame(width:80, height:80)
-                        .clipped()
-                        .padding()
-                    VStack {
-                        Text("\(self.champion?.name ?? "") \(self.qwer[i])")
-                            .foregroundColor(.gray)
-                            .font(Font.system(size: 50, weight:.heavy))
-                            .frame(width: 300, height: 300, alignment: .center)
-                        Text("\(self.champion?.name ?? "") \(self.qwer[i]) description")
-                            .foregroundColor(.gray)
-                            .font(Font.system(size: 30, weight:.heavy))
-                            .frame(width: 300, height: 300, alignment: .center)
+            List{
+            ForEach(0..<self.recommend.blocks.count){index in
+                
+                    PropRow(block: self.recommend.blocks[index], images: self.images[self.recommend.blocks[index].type] ?? [:])
+                }
+            }.onAppear(){
+                self.initImages()
+                self.loadImages()
+        }.padding()
+        
+    }
+    struct PropRow:View {
+        var block:Block
+        var images:[String:Image]
+        var body: some View{
+            ScrollView(.horizontal){
+            HStack{
+                Text(block.type).frame(width:120)
+                    ForEach(0..<block.items.count){index in
+                        self.images[self.block.items[index].id]?.padding()
                     }
                 }
             }
-            .onAppear() {
-                if !self.isLoadedImages {
-                    self.loadImage()
-                }
-            }
         }
     }
-}
-
-struct PropsView: View {
-    var body: some View {
-        List {
-            Text("0")
-            Text("1")
-        }
-    }
+    
 }
 
 struct SkinsView: View {
