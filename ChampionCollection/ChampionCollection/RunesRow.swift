@@ -10,6 +10,7 @@ import SwiftUI
 
 struct RunesRow: View {
     let runes:RuneSet
+    @State var isLoaded = false
     @State var picture: Image = Image(systemName: "person")
     @State var count = 0
     
@@ -18,6 +19,7 @@ struct RunesRow: View {
             (data, response , error) in
             if let data = data, let image = UIImage(data: data) {
                 self.picture = Image(uiImage: image)
+                self.isLoaded = true
             }
             else {
                 print("load fail")
@@ -50,7 +52,9 @@ struct RunesRow: View {
             
         }.onAppear(){
             self.count = self.runes.slots.count
-            self.loadImage()
+            if !self.isLoaded {
+                self.loadImage()
+            }
         }
     }
 }

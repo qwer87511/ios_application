@@ -7,14 +7,23 @@
 //
 
 import Foundation
-struct ItemData:Decodable{
-    var data:[String:Item]
+
+struct ItemData: Decodable{
+    var data: [String:Item]
 }
-struct Item:Decodable {
-    let name:String
-    let image:ItemImage
+
+struct Item: Decodable {
+    let name: String
+    let image: ItemImage
+    let plaintext: String
+    let gold: Gold
 }
-struct ItemImage:Decodable {
-    let full:String
-    let sprite:String
+
+struct ItemImage: Decodable {
+    let full: String
+    let sprite: String
+}
+
+struct Gold: Decodable {
+    let total: Int
 }

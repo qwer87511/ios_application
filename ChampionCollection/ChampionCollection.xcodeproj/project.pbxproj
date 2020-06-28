@@ -28,6 +28,7 @@
 		D700D063248B6ED60019A739 /* Champion.swift in Sources */ = {isa = PBXBuildFile; fileRef = D700D062248B6ED60019A739 /* Champion.swift */; };
 		D700D069248BD7450019A739 /* ChampionGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = D700D068248BD7450019A739 /* ChampionGrid.swift */; };
 		D71D819D248BFCC900592BBC /* ChampionDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = D71D819C248BFCC900592BBC /* ChampionDetail.swift */; };
+		D747129624A7D8B1002C851A /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D747129524A7D8B1002C851A /* SearchBar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +76,7 @@
 		D700D062248B6ED60019A739 /* Champion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Champion.swift; sourceTree = "<group>"; };
 		D700D068248BD7450019A739 /* ChampionGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChampionGrid.swift; sourceTree = "<group>"; };
 		D71D819C248BFCC900592BBC /* ChampionDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChampionDetail.swift; sourceTree = "<group>"; };
+		D747129524A7D8B1002C851A /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,7 +127,6 @@
 		D700D02F248B6C530019A739 /* ChampionCollection */ = {
 			isa = PBXGroup;
 			children = (
-				1080397824970EE800C83A56 /* Item.swift */,
 				D700D030248B6C530019A739 /* AppDelegate.swift */,
 				D700D032248B6C530019A739 /* SceneDelegate.swift */,
 				D700D034248B6C530019A739 /* ContentView.swift */,
@@ -137,6 +138,7 @@
 				D700D062248B6ED60019A739 /* Champion.swift */,
 				D700D068248BD7450019A739 /* ChampionGrid.swift */,
 				D71D819C248BFCC900592BBC /* ChampionDetail.swift */,
+				1080397824970EE800C83A56 /* Item.swift */,
 				1080397A24970FC600C83A56 /* ItemListView.swift */,
 				1080397C2497142400C83A56 /* ItemColView.swift */,
 				1080398024971E4700C83A56 /* Summoner.swift */,
@@ -145,6 +147,7 @@
 				105DCB8C24976E4B00309BB6 /* Runes.swift */,
 				105DCB8E24976F1B00309BB6 /* RunesListView.swift */,
 				105DCB902497763E00309BB6 /* RunesRow.swift */,
+				D747129524A7D8B1002C851A /* SearchBar.swift */,
 			);
 			path = ChampionCollection;
 			sourceTree = "<group>";
@@ -321,6 +324,7 @@
 				108039852497208800C83A56 /* SumGrid.swift in Sources */,
 				D700D069248BD7450019A739 /* ChampionGrid.swift in Sources */,
 				105DCB912497763E00309BB6 /* RunesRow.swift in Sources */,
+				D747129624A7D8B1002C851A /* SearchBar.swift in Sources */,
 				D700D061248B6EAF0019A739 /* ChampionsListView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

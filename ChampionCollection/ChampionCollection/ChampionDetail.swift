@@ -55,7 +55,6 @@ struct ChampionDetail: View {
             GeometryReader { metrics in
                 ZStack {
                     self.championImage
-                        
                         .resizable()
                         .scaledToFit()
                         //.frame(width:80, height:80)
@@ -82,23 +81,19 @@ struct ChampionDetail: View {
             .pickerStyle(SegmentedPickerStyle())
             .padding(.horizontal, 24)
             
-            //Section {
-                if selectorIndex == 0 {
-                    ProfileView(text: self.champion.blurb)
-                }
-                else if selectorIndex == 1 {
-                    SkillsView(champion: self.championData)
-                }
-                else if selectorIndex == 2 {
-                    //PropsView()
-                    ItemListView()
-                }
-                else if selectorIndex == 3 {
-                    SkinsView(skinImage: $championImage, champion: self.champion)
-                }
-            //}
-            
-            
+            if selectorIndex == 0 {
+                ProfileView(text: self.champion.blurb)
+            }
+            else if selectorIndex == 1 {
+                SkillsView(champion: self.championData)
+            }
+            else if selectorIndex == 2 {
+                //PropsView()
+                ItemListView()
+            }
+            else if selectorIndex == 3 {
+                SkinsView(skinImage: $championImage, champion: self.champion)
+            }
         }
         .onAppear() {
             if !self.isLoadedChampions {
@@ -109,8 +104,6 @@ struct ChampionDetail: View {
             }
         }
     }
-    
-    
 }
 
 struct ProfileView: View {
@@ -135,22 +128,22 @@ struct SkillsView: View {
     @State var isLoadedImages = false
     
     func loadImage() {
-        if let data = champion {
-            for i in 0..<4 {
-                URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/10.12.1/img/spell/\(data.spells[i].image.full)")!) {
-                    (data, response , error) in
-                    if let data = data, let image = UIImage(data: data) {
-                        DispatchQueue.main.async{
-                            self.skillsImage[i] = Image(uiImage: image)
-                        }
-                        self.isLoadedImages = true
-                    }
-                    else {
-                        print("load skill api fail")
-                    }
-                }.resume()
-            }
-        }
+//        if let data = champion {
+//            for i in 0..<4 {
+//                URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/10.12.1/img/spell/\(data.spells[i].image.full)")!) {
+//                    (data, response , error) in
+//                    if let data = data, let image = UIImage(data: data) {
+//                        DispatchQueue.main.async{
+//                            self.skillsImage[i] = Image(uiImage: image)
+//                        }
+//                        self.isLoadedImages = true
+//                    }
+//                    else {
+//                        print("load skill api fail")
+//                    }
+//                }.resume()
+//            }
+//        }
     }
     
     var body: some View {
@@ -199,7 +192,7 @@ struct SkinsView: View {
     @State var isloadedImages = false
     func loadImage(_ i: Int) {
         
-        URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/\(champion.name)_\(i).jpg")!) {
+        URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/\(champion.id)_\(i).jpg")!) {
             (data, response , error) in
             if let data = data, let image = UIImage(data: data) {
                 DispatchQueue.main.async {

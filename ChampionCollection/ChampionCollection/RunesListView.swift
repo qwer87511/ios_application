@@ -11,18 +11,18 @@ import SwiftUI
 struct RunesListView: View {
     @State var runesData=[RuneSet]()
     @State var colrunes : [[Int]] = []
-
+    @State var isLoaded = false
     
     func loadRunes(){
         if let url = URL(string: "https://ddragon.leagueoflegends.com/cdn/10.12.1/data/zh_TW/runesReforged.json"){
             URLSession.shared.dataTask(with: url) { (data, response , error) in
                 let decoder = JSONDecoder()
                 if let data = data{
-                  
                     do{
                         let runes = try decoder.decode([RuneSet].self, from: data)
-                        self.runesData=runes
-                    }catch{
+                        self.runesData = runes
+                        self.isLoaded = true
+                    } catch{
                     }
                 }
                 
@@ -34,19 +34,21 @@ struct RunesListView: View {
         NavigationView{
             List{
                 ForEach(self.runesData, id: \.id){rune in
-                    VStack{
+                    VStack {
                         RunesRow(runes: rune)
                     }
                 }
             }.navigationBarTitle("Runes")
         }.onAppear(){
-            self.loadRunes()
+            if !self.isLoaded {
+                self.loadRunes()
+            }
         }
     }
 }
 
-//struct RunesListView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        RunesListView()
-//    }
-//}
+struct RunesListView_Previews: PreviewProvider {
+    static var previews: some View {
+        RunesListView()
+    }
+}
