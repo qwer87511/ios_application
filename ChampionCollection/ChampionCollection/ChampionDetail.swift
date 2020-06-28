@@ -123,13 +123,7 @@ struct SkillsView: View {
         Image(systemName: "person"),Image(systemName: "person"),Image(systemName: "person"),Image(systemName: "person")
     ]
     let qwer = ["Q", "W", "E", "R"]
-<<<<<<< HEAD
-//    var skillName: String
-//    var skillDescription: String
-    @State var champion: ChampionData?
-=======
     let champion: ChampionInfo?
->>>>>>> d3ba8fc824f1525471c98bab5bcdd074af96aab3
     @State var isLoadedImages = false
     
     func loadImage() {
@@ -151,43 +145,18 @@ struct SkillsView: View {
     }
     
     var body: some View {
-<<<<<<< HEAD
-        VStack {
-            List(0..<4) { i in
-                HStack {
-                    self.skillsImage[i]
-                        .resizable()
-                        .scaledToFill()
-                        //.frame(width:80, height:80)
-                        .clipped()
-                        .padding()
-                    VStack {
-                        Text("\(self.champion?.name ?? "") \(self.qwer[i])")
-                            .foregroundColor(.gray)
-                            .font(Font.system(size: 30, weight:.heavy))
-                            .frame(width: 100, height: 100, alignment: .center)
-                        Text("\(self.champion?.name ?? "") \(self.qwer[i]) description")
-                            .foregroundColor(.gray)
-                            .font(Font.system(size: 20, weight:.heavy))
-                            .frame(width: 50, height: 50, alignment: .center)
-                    }
-                }
-            }
-            .onAppear() {
-                if !self.isLoadedImages {
-                    self.loadImage()
-=======
         VStack{
             List(0..<self.champion!.spells.count, id:\.self){index in
                 HStack{
                     self.skillsImage[index].resizable().scaledToFit().clipped()
                         .padding().frame(width:100,height:100)
                     Text("\(self.qwer[index]) \(self.champion!.spells[index].name)")
->>>>>>> d3ba8fc824f1525471c98bab5bcdd074af96aab3
                 }
             }
         }.onAppear(){
-            self.loadImage()
+            if !self.isLoadedImages {
+                self.loadImage()
+            }
         }
     }
 }
@@ -284,11 +253,7 @@ struct SkinsView: View {
     @Binding var skinImage: Image// = Image(systemName: "person")
     let champion: Champion
     @State var isloadedImages = false
-<<<<<<< HEAD
-    
-=======
     let skins: [Skin]
->>>>>>> d3ba8fc824f1525471c98bab5bcdd074af96aab3
     func loadImage(_ i: Int) {
         
         URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/\(champion.id)_\(i).jpg")!) {

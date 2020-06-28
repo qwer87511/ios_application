@@ -70,13 +70,6 @@ struct ChampionsListView: View {
     
     @State var displayChampions = [Champion]()
     
-//    var displayChampions: [Champion] {
-//        get {
-//            print("get")
-//            return self.champions.filter({ searchText == "" ? true : $0.name.contains(searchText) })
-//        }
-//    }
-    
     func updateDisplayChampions() {
         print("update")
         
@@ -168,43 +161,6 @@ struct ChampionsGridView: View {
     @Binding var champions: [Champion]
     
     var body: some View {
-        // grid view
-//        HStack {
-//            ForEach(0..<champions.count) { index in
-//                VStack {
-//                    if (index % 3 == 0) {
-//                        ForEach(0..<3) { columnIndex in
-//                            if index < self.champions.count {
-//                                NavigationLink(destination: ChampionDetail(champion: self.champions[index + columnIndex])) {
-//                                    ChampionGrid(champion: self.champions[index + columnIndex])
-//                                }
-//                            }
-//                            else {
-//                                Spacer()
-//                            }
-//                        }
-//                        Spacer()
-//                    }
-//                }
-//            }
-//        }
-//        ForEach(Array(stride(from: 0, to: self.champions.count, by: self.columnCount)), id: \.self) { index in
-//            VStack {
-//                ForEach(index..<index + self.columnCount) { championIndex in
-//                    HStack{
-//                        if championIndex < self.champions.count {
-//                            NavigationLink(destination: ChampionDetail(champion: self.champions[championIndex])) {
-//                                ChampionGrid(champion: self.champions[championIndex])
-//                            }
-//                        }
-//                        else {
-//                            Spacer()
-//                        }
-//                    }
-//                }
-//                Spacer()
-//            }
-//        }
         VStack {
             ForEach(0..<getColumns(champions.count), id: \.self) { i in
                 HStack {
