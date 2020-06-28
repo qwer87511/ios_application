@@ -50,6 +50,7 @@ public struct ChampionInfo: Decodable {
 public struct Skin: Decodable {
     var id: String
     var name: String
+    var num: Int
 }
 public struct Recommend:Decodable{
     public var champion:String
