@@ -124,7 +124,7 @@ struct SkillsView: View {
     let qwer = ["Q", "W", "E", "R"]
 //    var skillName: String
 //    var skillDescription: String
-    var champion: ChampionData?
+    @State var champion: ChampionData?
     @State var isLoadedImages = false
     
     func loadImage() {
@@ -159,12 +159,12 @@ struct SkillsView: View {
                     VStack {
                         Text("\(self.champion?.name ?? "") \(self.qwer[i])")
                             .foregroundColor(.gray)
-                            .font(Font.system(size: 50, weight:.heavy))
-                            .frame(width: 300, height: 300, alignment: .center)
+                            .font(Font.system(size: 30, weight:.heavy))
+                            .frame(width: 100, height: 100, alignment: .center)
                         Text("\(self.champion?.name ?? "") \(self.qwer[i]) description")
                             .foregroundColor(.gray)
-                            .font(Font.system(size: 30, weight:.heavy))
-                            .frame(width: 300, height: 300, alignment: .center)
+                            .font(Font.system(size: 20, weight:.heavy))
+                            .frame(width: 50, height: 50, alignment: .center)
                     }
                 }
             }
@@ -190,6 +190,7 @@ struct SkinsView: View {
     @Binding var skinImage: Image// = Image(systemName: "person")
     let champion: Champion
     @State var isloadedImages = false
+    
     func loadImage(_ i: Int) {
         
         URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/\(champion.id)_\(i).jpg")!) {

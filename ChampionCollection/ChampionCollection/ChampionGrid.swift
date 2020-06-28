@@ -8,6 +8,21 @@
 
 import SwiftUI
 
+struct ChampionGridRow: View {
+    let columnCount = 3
+    let champions: [Champion]
+    
+    var body: some View {
+        HStack {
+            ForEach(self.champions.indices, id: \.self) { i in
+                NavigationLink(destination: ChampionDetail(champion: self.champions[i])) {
+                    ChampionGrid(champion: self.champions[i])
+                }
+            }
+        }
+    }
+}
+
 struct ChampionGrid: View {
     
     let champion: Champion

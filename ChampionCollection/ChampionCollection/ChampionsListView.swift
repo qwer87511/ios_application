@@ -20,10 +20,10 @@ struct ChampionsListView: View {
                 let decoder = JSONDecoder()
                 if let data = data, let champs = try? decoder.decode(Champions.self, from: data) {
                     DispatchQueue.main.async {
-                        let sorted_champs = champs.data.sorted{
+                        let sorted_champs = champs.data.sorted {
                             $0.key<$1.key
                         }
-                        for (key,value) in sorted_champs{
+                        for (key,value) in sorted_champs {
                             champions.append(value)
                         }
                         self.champions = champions
@@ -62,7 +62,6 @@ struct ChampionsListView: View {
     @State var searchText = "" {
         didSet {
             print(2)
-            displayChampions.removeAll()
             self.updateDisplayChampions()
         }
     }
@@ -81,8 +80,6 @@ struct ChampionsListView: View {
     func updateDisplayChampions() {
         print("update")
         
-        displayChampions.removeAll()
-        
         var filteredCampions = champions
         
         if searchText != "" {
@@ -94,6 +91,8 @@ struct ChampionsListView: View {
         }
         
         displayChampions = filteredCampions
+        print(displayChampions.count)
+        print(displayChampions.count > 0 ? displayChampions[0].name : "")
     }
     
     let tags = ["All", "Assassin", "Fighter", "Mage", "Marksman", "Support", "Tank", "e"]
@@ -118,9 +117,8 @@ struct ChampionsListView: View {
                             }
                         }
                         .pickerStyle(SegmentedPickerStyle())
-                        //.padding(.horizontal, 24)
+//                        .padding(.horizontal, 24)
                         .onReceive([self.selectorIndex].publisher.first()) { (value) in
-
                             self.updateDisplayChampions()
                         }
                         
@@ -168,33 +166,64 @@ struct ChampionsGridView: View {
 
     let columnCount: Int
     @Binding var champions: [Champion]
-
+    
     var body: some View {
         // grid view
-        ForEach(Array(stride(from: 0, to: self.champions.count, by: self.columnCount)), id: \.self) { index in
-            HStack {
-                ForEach(index..<index + self.columnCount) { championIndex in
-                    if championIndex < self.champions.count {
-                        NavigationLink(destination: ChampionDetail(champion: self.champions[championIndex])) {
-                            ChampionGrid(champion: self.champions[championIndex])
-                        }
-                    }
+//        HStack {
+//            ForEach(0..<champions.count) { index in
+//                VStack {
+//                    if (index % 3 == 0) {
+//                        ForEach(0..<3) { columnIndex in
+//                            if index < self.champions.count {
+//                                NavigationLink(destination: ChampionDetail(champion: self.champions[index + columnIndex])) {
+//                                    ChampionGrid(champion: self.champions[index + columnIndex])
+//                                }
+//                            }
+//                            else {
+//                                Spacer()
+//                            }
+//                        }
+//                        Spacer()
+//                    }
+//                }
+//            }
+//        }
+//        ForEach(Array(stride(from: 0, to: self.champions.count, by: self.columnCount)), id: \.self) { index in
+//            VStack {
+//                ForEach(index..<index + self.columnCount) { championIndex in
+//                    HStack{
+//                        if championIndex < self.champions.count {
+//                            NavigationLink(destination: ChampionDetail(champion: self.champions[championIndex])) {
+//                                ChampionGrid(champion: self.champions[championIndex])
+//                            }
+//                        }
+//                        else {
+//                            Spacer()
+//                        }
+//                    }
+//                }
+//                Spacer()
+//            }
+//        }
+        VStack {
+            ForEach(0..<getColumns(champions.count), id: \.self) { i in
+                HStack {
+                    ChampionGridRow(champions: Array(self.champions[self.getStart(i)..<self.getEnd(i, count: self.champions.count)]))
                 }
-                Spacer()
             }
         }
     }
+    
+    func getColumns(_ i: Int) -> Int {
+        return (i - 1) / 3 + 1
+    }
+    func getStart(_ i: Int) -> Int {
+        return i * 3
+    }
+    func getEnd(_ i: Int, count: Int) -> Int {
+        return min((i + 1) * 3, count)
+    }
 }
-////        ForEach(0..<(self.champions.count - 1) / 3 + 1, id: \.self) { rowIndex in
-////            HStack {
-////                ForEach(rowIndex * 3..<min(rowIndex * 3 + 3, self.champions.count)) { championIndex in
-////                    NavigationLink(destination: ChampionDetail(champion: self.champions[championIndex])) {
-////                        ChampionGrid(champion: self.champions[championIndex])
-////                    }
-////                }
-////                Spacer()
-////            }
-////        }
 		
 struct ChampionsListView_Previews: PreviewProvider {
     static var previews: some View {
