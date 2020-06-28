@@ -32,61 +32,37 @@ public struct Spell: Decodable {
     var image: APIImg
 }
 
-public struct ChampionsData: Decodable {
-    let data: [String: ChampionData]
+public struct ChampionInfoData: Decodable {
+    public let data: [String: ChampionInfo]
 }
 
-//public struct WrappedChampionAPIData: Decodable {
-//    var data: ChampionAPIData
-//}
-//
-//public struct ChampionAPIData: Decodable {
-//
-//    var championData: ChampionData?
-//
-//    struct ChampionKey: CodingKey {
-//        var stringValue: String
-//
-//        init?(stringValue: String) {
-//            self.stringValue = stringValue
-//        }
-//
-//        var intValue: Int? { return nil }
-//        init?(intValue: Int) { return nil }
-//
-//        static let name = ChampionKey(stringValue: "name")
-//        static let id = ChampionKey(stringValue: "id")
-//        static let title = ChampionKey(stringValue: "title")
-//        static let blurb = ChampionKey(stringValue: "blurb")
-//        static let image = ChampionKey(stringValue: "image")
-//        static let spells = ChampionKey(stringValue: "spells")
-//        static let skins = ChampionKey(stringValue: "skins")
-//    }
-//
-//    public init(from decoder: Decoder) throws {
-//        let container = try decoder.container(keyedBy: ChampionKey.self)
-//        for key in container.allKeys {
-//            let championContainer = try container.nestedContainer(keyedBy: ChampionKey.self, forKey: key)
-//            let name = try championContainer.decode(String.self, forKey: ChampionKey.name!)
-//            //let description = try productContainer.decodeIfPresent(String.self, forKey: .description)
-//
-//            championData = ChampionData(name: name, id: "", title: "", blurb: "", image: APIImg(full: "", sprite: ""), spells: [Spell](), skins: [Skin]())
-//        }
-//    }
-//}
-
-public struct ChampionData: Decodable {
+public struct ChampionInfo: Decodable {
     var name: String
     var id: String
     var title: String
     var blurb: String
     var image: APIImg
-    var spells: [Spell]
+    public var spells: [Spell] = []
     var skins: [Skin]
+    public var recommended:[Recommend]
 }
 
 public struct Skin: Decodable {
     var id: String
     var name: String
+    var num: Int
 }
-
+public struct Recommend:Decodable{
+    public var champion:String
+    public var title:String
+    public var mode:String
+    public var type:String
+    public var blocks:[Block]
+}
+public struct Block:Decodable{
+    public var type:String
+    public var items:[ChampionItems]
+}
+public struct ChampionItems:Decodable{
+    public var id:String
+}

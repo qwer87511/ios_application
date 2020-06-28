@@ -10,7 +10,7 @@ import SwiftUI
 
 struct ChampionDetail: View {
     let champion: Champion
-    @State var championData: ChampionData?
+    @State var championInfo: ChampionInfo?
     @State var championImage: Image = Image(systemName: "person")
     @State var isLoadedChampions = false
     @State var isLoadedImage = false
@@ -35,9 +35,9 @@ struct ChampionDetail: View {
         URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/10.12.1/data/en_US/champion/\(champion.id).json")!) {
             (data, response , error) in
             let decoder = JSONDecoder()
-            if let data = data, let c = try? decoder.decode(ChampionsData.self, from: data) {
+            if let data = data, let c = try? decoder.decode(ChampionInfoData.self, from: data) {
                 DispatchQueue.main.async {
-                    self.championData = c.data[self.champion.name]
+                    self.championInfo = c.data[self.champion.name]
                 }
                 self.isLoadedChampions = true
             }
@@ -80,20 +80,21 @@ struct ChampionDetail: View {
             }
             .pickerStyle(SegmentedPickerStyle())
             .padding(.horizontal, 24)
-            
-            if selectorIndex == 0 {
-                ProfileView(text: self.champion.blurb)
-            }
-            else if selectorIndex == 1 {
-                SkillsView(champion: self.championData)
-            }
-            else if selectorIndex == 2 {
-                //PropsView()
-                ItemListView()
-            }
-            else if selectorIndex == 3 {
-                SkinsView(skinImage: $championImage, champion: self.champion)
-            }
+            //Section {
+                if selectorIndex == 0 {
+                    ProfileView(text: self.champion.blurb)
+                }
+                else if selectorIndex == 1 {
+                    SkillsView(champion: self.championInfo)
+                }
+                else if selectorIndex == 2 {
+                    PropsView(recommends: self.championInfo!.recommended)
+                }
+                else if selectorIndex == 3 {
+                    SkinsView(skinImage: $championImage, champion: self.champion,
+                              skins: self.championInfo!.skins)
+                }
+            //}
         }
         .onAppear() {
             if !self.isLoadedChampions {
@@ -102,7 +103,7 @@ struct ChampionDetail: View {
             if !self.isLoadedImage {
                 self.loadImage()
             }
-        }
+        }.disabled(!self.isLoadedChampions)
     }
 }
 
@@ -122,31 +123,35 @@ struct SkillsView: View {
         Image(systemName: "person"),Image(systemName: "person"),Image(systemName: "person"),Image(systemName: "person")
     ]
     let qwer = ["Q", "W", "E", "R"]
+<<<<<<< HEAD
 //    var skillName: String
 //    var skillDescription: String
     @State var champion: ChampionData?
+=======
+    let champion: ChampionInfo?
+>>>>>>> d3ba8fc824f1525471c98bab5bcdd074af96aab3
     @State var isLoadedImages = false
     
     func loadImage() {
-//        if let data = champion {
-//            for i in 0..<4 {
-//                URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/10.12.1/img/spell/\(data.spells[i].image.full)")!) {
-//                    (data, response , error) in
-//                    if let data = data, let image = UIImage(data: data) {
-//                        DispatchQueue.main.async{
-//                            self.skillsImage[i] = Image(uiImage: image)
-//                        }
-//                        self.isLoadedImages = true
-//                    }
-//                    else {
-//                        print("load skill api fail")
-//                    }
-//                }.resume()
-//            }
-//        }
+
+        for i in 0..<4 {
+            URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/10.12.1/img/spell/\(self.champion!.spells[i].image.full)")!) {
+                (data, response , error) in
+                if let data = data, let image = UIImage(data: data) {
+                    DispatchQueue.main.async{
+                        self.skillsImage[i] = Image(uiImage: image)
+                    }
+                    self.isLoadedImages = true
+                }
+                else {
+                    print("load skill api fail")
+                }
+            }.resume()
+        }
     }
     
     var body: some View {
+<<<<<<< HEAD
         VStack {
             List(0..<4) { i in
                 HStack {
@@ -171,26 +176,119 @@ struct SkillsView: View {
             .onAppear() {
                 if !self.isLoadedImages {
                     self.loadImage()
+=======
+        VStack{
+            List(0..<self.champion!.spells.count, id:\.self){index in
+                HStack{
+                    self.skillsImage[index].resizable().scaledToFit().clipped()
+                        .padding().frame(width:100,height:100)
+                    Text("\(self.qwer[index]) \(self.champion!.spells[index].name)")
+>>>>>>> d3ba8fc824f1525471c98bab5bcdd074af96aab3
                 }
             }
+        }.onAppear(){
+            self.loadImage()
         }
     }
 }
 
 struct PropsView: View {
-    var body: some View {
-        List {
-            Text("0")
-            Text("1")
+    var recommend:Recommend
+    @State var images = [String:[String:Image]]()
+    init(recommends:[Recommend]) {
+        let index = recommends.firstIndex{ (r) -> Bool in
+            return r.mode == "CLASSIC"
+        }!
+        self.recommend = recommends[index]
+    }
+    func loadImages(){
+        for block in self.recommend.blocks{
+            for item in block.items{
+                URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/10.12.1/img/item/\(item.id).png")!) {
+                    (data, response , error) in
+                    if let data = data, let image = UIImage(data: data) {
+                        self.images[block.type]?[item.id] = Image(uiImage: image)
+                    }
+                    else {
+                        print("load skill api fail")
+                    }
+                }.resume()
+            }
         }
     }
+    func initImages(){
+        for block in self.recommend.blocks{
+            for item in block.items{
+                if self.images[block.type] != nil{
+                    self.images[block.type]?[item.id] = Image(systemName: "person")
+                }else{
+                    self.images[block.type] = [String:Image]()
+                    self.images[block.type]?[item.id] = Image(systemName: "person")
+                }
+            }
+        }
+    }
+    func checkImage(images: [Image]) -> Bool{
+        return images != nil
+    }
+    var body: some View {
+            List{
+            ForEach(0..<self.recommend.blocks.count){index in
+                
+                    PropRow(block: self.recommend.blocks[index], images: self.images[self.recommend.blocks[index].type] ?? [:])
+                }
+            }.onAppear(){
+                self.initImages()
+                self.loadImages()
+        }.padding()
+        
+    }
+    struct PropRow:View {
+        var block:Block
+        var images:[String:Image]
+        var body: some View{
+            ScrollView(.horizontal){
+            HStack{
+                Text(block.type).frame(width:120)
+                    ForEach(0..<block.items.count){index in
+                        PropImage(item: self.block.items[index])
+                    }
+                }
+            }
+        }
+    }
+    struct PropImage:View{
+        @State var image:Image=Image(systemName: "person")
+        var item:ChampionItems
+        func loadImg(){
+            URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/10.12.1/img/item/\(self.item.id).png")!) {
+                (data, response , error) in
+                if let data = data, let image = UIImage(data: data) {
+                    self.image = Image(uiImage: image)
+                }
+                else {
+                    print("load skill api fail")
+                }
+            }.resume()
+        }
+        var body:some View{
+            image.frame(width:100, height:100).onAppear(){
+                self.loadImg()
+            }
+        }
+    }
+    
 }
 
 struct SkinsView: View {
     @Binding var skinImage: Image// = Image(systemName: "person")
     let champion: Champion
     @State var isloadedImages = false
+<<<<<<< HEAD
     
+=======
+    let skins: [Skin]
+>>>>>>> d3ba8fc824f1525471c98bab5bcdd074af96aab3
     func loadImage(_ i: Int) {
         
         URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/\(champion.id)_\(i).jpg")!) {
@@ -207,19 +305,45 @@ struct SkinsView: View {
     }
     
     var body: some View {
-        VStack {
-            List(0..<2) { (i) in
-                Text("skin \(i)")
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    self.loadImage(i)
+        ScrollView(.horizontal){
+            HStack {
+                ForEach(self.skins, id:\.id){skin in
+                    ImagePoster(name: self.champion.name, skin: skin)
+                }
+                }.padding()
+            .onAppear() {
+                
+                if !self.isloadedImages {
+                    self.loadImage(0)
                 }
             }
         }
-        .onAppear() {
-            
-            if !self.isloadedImages {
-                self.loadImage(0)
+    }
+    struct ImagePoster: View{
+        @State var image = Image(systemName: "person")
+        var name : String
+        var skin:Skin
+        func loadImg(){
+            URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/\(self.name)_\(self.skin.num).jpg")!) {
+                (data, response , error) in
+                if let data = data, let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        self.image = Image(uiImage: image)
+                    }
+                }
+                else {
+                    print("load skin fail")
+                }
+            }.resume()
+        }
+        var body:some View{
+            image
+                .resizable()
+                .frame(width:180, height: 250)
+                .padding()
+            .cornerRadius(CGFloat(60), antialiased: false)
+                .onAppear(){
+                self.loadImg()
             }
         }
     }
