@@ -18,6 +18,7 @@ public struct Champion: Decodable {
     var title: String
     var blurb: String
     var image: APIImg
+    var tags: [String]
 }
 
 public struct APIImg: Decodable {

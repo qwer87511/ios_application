@@ -55,7 +55,6 @@ struct ChampionDetail: View {
             GeometryReader { metrics in
                 ZStack {
                     self.championImage
-                        
                         .resizable()
                         .scaledToFit()
                         //.frame(width:80, height:80)
@@ -81,7 +80,6 @@ struct ChampionDetail: View {
             }
             .pickerStyle(SegmentedPickerStyle())
             .padding(.horizontal, 24)
-            
             //Section {
                 if selectorIndex == 0 {
                     ProfileView(text: self.champion.blurb)
@@ -96,8 +94,6 @@ struct ChampionDetail: View {
                     SkinsView(skinImage: $championImage, champion: self.champion)
                 }
             //}
-            
-            
         }
         .onAppear() {
             if !self.isLoadedChampions {
@@ -108,8 +104,6 @@ struct ChampionDetail: View {
             }
         }.disabled(!self.isLoadedChampions)
     }
-    
-    
 }
 
 struct ProfileView: View {
@@ -132,6 +126,7 @@ struct SkillsView: View {
     @State var isLoadedImages = false
     
     func loadImage() {
+
         for i in 0..<4 {
             URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/10.12.1/img/spell/\(self.champion!.spells[i].image.full)")!) {
                 (data, response , error) in
@@ -186,7 +181,6 @@ struct PropsView: View {
                 }.resume()
             }
         }
-        
     }
     func initImages(){
         for block in self.recommend.blocks{
@@ -238,7 +232,7 @@ struct SkinsView: View {
     @State var isloadedImages = false
     func loadImage(_ i: Int) {
         
-        URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/\(champion.name)_\(i).jpg")!) {
+        URLSession.shared.dataTask(with: URL(string: "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/\(champion.id)_\(i).jpg")!) {
             (data, response , error) in
             if let data = data, let image = UIImage(data: data) {
                 DispatchQueue.main.async {

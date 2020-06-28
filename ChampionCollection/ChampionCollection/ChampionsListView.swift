@@ -13,6 +13,7 @@ struct ChampionsListView: View {
     @State var champions = [Champion]()
     
     func loadChampions() {
+        var champions = [Champion]()
         let urlStr = "https://ddragon.leagueoflegends.com/cdn/10.10.3216176/data/en_US/champion.json"
         if let url = URL(string: urlStr) {
             URLSession.shared.dataTask(with: url) { (data, response , error) in
@@ -23,8 +24,10 @@ struct ChampionsListView: View {
                             $0.key<$1.key
                         }
                         for (key,value) in sorted_champs{
-                            self.champions.append(value)
+                            champions.append(value)
                         }
+                        self.champions = champions
+                        self.displayChampions = champions
                     }
                 }
             }.resume()
@@ -55,41 +58,143 @@ struct ChampionsListView: View {
     }
     
     let columnCount = 3
-    	
+    
+    @State var searchText = "" {
+        didSet {
+            print(2)
+            displayChampions.removeAll()
+            self.updateDisplayChampions()
+        }
+    }
+    
+    @State private var selectorIndex = 0
+    
+    @State var displayChampions = [Champion]()
+    
+//    var displayChampions: [Champion] {
+//        get {
+//            print("get")
+//            return self.champions.filter({ searchText == "" ? true : $0.name.contains(searchText) })
+//        }
+//    }
+    
+    func updateDisplayChampions() {
+        print("update")
+        
+        displayChampions.removeAll()
+        
+        var filteredCampions = champions
+        
+        if searchText != "" {
+            filteredCampions = champions.filter({ $0.name.contains(searchText) })
+        }
+        
+        if selectorIndex != 0 {
+            filteredCampions = filteredCampions.filter({ $0.tags.contains(tags[selectorIndex]) })
+        }
+        
+        displayChampions = filteredCampions
+    }
+    
+    let tags = ["All", "Assassin", "Fighter", "Mage", "Marksman", "Support", "Tank", "e"]
+    
     var body: some View {
-        
         GeometryReader { geo in
-        
             NavigationView {
                 ScrollView(.vertical, showsIndicators: true) {
                     VStack(alignment: .leading) {
-                        ForEach(Array(stride(from: 0, to: self.champions.count, by: self.columnCount)), id: \.self) { index in
-                            HStack {
-                                ForEach(index..<min(index + self.columnCount, self.champions.count)) { championIndex in
-                                    NavigationLink(destination: ChampionDetail(champion: self.champions[championIndex])) {
-                                        ChampionGrid(champion: self.champions[championIndex])
-                                    }
-                                }
-                                Spacer()
+                        
+                        // search  bar
+                        SearchBar(text: Binding<String>(
+                            get: { self.searchText },
+                            set: {
+                                self.searchText = $0
+                        }))
+                        
+                        // picker
+                        Picker("Numbers", selection: self.$selectorIndex) {
+                            ForEach(0 ..< self.tags.count) { i in
+                                Text(self.tags[i]).tag(i)
                             }
                         }
+                        .pickerStyle(SegmentedPickerStyle())
+                        //.padding(.horizontal, 24)
+                        .onReceive([self.selectorIndex].publisher.first()) { (value) in
+
+                            self.updateDisplayChampions()
+                        }
+                        
+                        // grid view
+//                        ForEach(Array(stride(from: 0, to: self.displayChampions.count, by: self.columnCount)), id: \.self) { index in
+//                            HStack {
+////                                ForEach(index..<min(index + self.columnCount, self.displayChampions.count)) { championIndex in
+////                                    if championIndex < self.displayChampions.count {
+////                                        NavigationLink(destination: ChampionDetail(champion: self.displayChampions[championIndex])) {
+////                                            ChampionGrid(champion: self.displayChampions[championIndex])
+////                                        }
+////                                    }
+////                                }
+//                                ForEach(index..<index + self.columnCount) { championIndex in
+//                                    if championIndex < self.displayChampions.count {
+//                                        NavigationLink(destination: ChampionDetail(champion: self.displayChampions[championIndex])) {
+//                                            ChampionGrid(champion: self.displayChampions[championIndex])
+//                                        }
+//                                    }
+//                                }
+//                                Spacer()
+//                            }
+//                        }
+                        ChampionsGridView(columnCount: 3, champions: self.$displayChampions)
                     }
                     .padding()
                     .frame(width: geo.size.width)
                 }
                 .navigationBarTitle("Champions")
             }
-    
-            .onAppear() {
-                if self.champions.isEmpty {
-                    self.loadChampions()
-                }
-                
+        }
+        .onAppear() {
+            if self.champions.isEmpty {
+                self.loadChampions()
             }
-            
         }
     }
 }
+
+class ObservableChampion: ObservableObject {
+    @Published var champions = [Champion]()
+}
+
+struct ChampionsGridView: View {
+
+    let columnCount: Int
+    @Binding var champions: [Champion]
+
+    var body: some View {
+        // grid view
+        ForEach(Array(stride(from: 0, to: self.champions.count, by: self.columnCount)), id: \.self) { index in
+            HStack {
+                ForEach(index..<index + self.columnCount) { championIndex in
+                    if championIndex < self.champions.count {
+                        NavigationLink(destination: ChampionDetail(champion: self.champions[championIndex])) {
+                            ChampionGrid(champion: self.champions[championIndex])
+                        }
+                    }
+                }
+                Spacer()
+            }
+        }
+    }
+}
+////        ForEach(0..<(self.champions.count - 1) / 3 + 1, id: \.self) { rowIndex in
+////            HStack {
+////                ForEach(rowIndex * 3..<min(rowIndex * 3 + 3, self.champions.count)) { championIndex in
+////                    NavigationLink(destination: ChampionDetail(champion: self.champions[championIndex])) {
+////                        ChampionGrid(champion: self.champions[championIndex])
+////                    }
+////                }
+////                Spacer()
+////            }
+////        }
 		
 struct ChampionsListView_Previews: PreviewProvider {
     static var previews: some View {
