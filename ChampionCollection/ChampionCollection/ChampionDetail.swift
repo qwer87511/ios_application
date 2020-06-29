@@ -219,7 +219,7 @@ struct PropsView: View {
             ScrollView(.horizontal){
             HStack{
                 Text(block.type).frame(width:120)
-                    ForEach(0..<block.items.count){index in
+                ForEach(0..<block.items.count, id: \.self){index in
                         PropImage(item: self.block.items[index])
                     }
                 }
