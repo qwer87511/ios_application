@@ -33,35 +33,13 @@ struct ChampionsListView: View {
             }.resume()
         }
         
-//        champions.append(Champion(name: "Aatrox", title: "the Darkin Blade", blurb: "Once honored defenders of Shurima against the Void, Aatrox and his brethren would eventually become an even greater threat to Runeterra, and were defeated only by cunning mortal sorcery. But after centuries of imprisonment, Aatrox was the first to find...", imageName: "Aatrox.png"))
-//
-//        champions.append(Champion(name: "Ahri", title: "the Nine-Tailed Fox", blurb: "Innately connected to the latent power of Runeterra, Ahri is a vastaya who can reshape magic into orbs of raw energy. She revels in toying with her prey by manipulating their emotions before devouring their life essence. Despite her predatory nature...", imageName: "Ahri.png"))
-//        champions.append(Champion(name: "Akali", title: "the Rogue Assassin", blurb: "Abandoning the Kinkou Order and her title of the Fist of Shadow, Akali now strikes alone, ready to be the deadly weapon her people need. Though she holds onto all she learned from her master Shen, she has pledged to defend Ionia from its enemies, one...", imageName: "Akali.png"))
-//
-//        champions.append(Champion(name: "Alistar", title: "the Sad Mummy", blurb: "Legend claims that Amumu is a lonely and melancholy soul from ancient Shurima, roaming the world in search of a friend. Doomed by an ancient curse to remain alone forever, his touch is death, his affection ruin. Those who claim to have seen him describe...", imageName: "Alistar.png"))
-//        champions.append(Champion(name: "Amumu", title: "the Minotaur", blurb: "Always a mighty warrior with a fearsome reputation, Alistar seeks revenge for the death of his clan at the hands of the Noxian empire. Though he was enslaved and forced into the life of a gladiator, his unbreakable will was what kept him from truly...", imageName: "Amumu.png"))
-//        champions.append(Champion(name: "Aatrox", title: "the Darkin Blade", blurb: "Once honored defenders of Shurima against the Void, Aatrox and his brethren would eventually become an even greater threat to Runeterra, and were defeated only by cunning mortal sorcery. But after centuries of imprisonment, Aatrox was the first to find...", imageName: "Aatrox.png"))
-//
-//        champions.append(Champion(name: "Ahri", title: "the Nine-Tailed Fox", blurb: "Innately connected to the latent power of Runeterra, Ahri is a vastaya who can reshape magic into orbs of raw energy. She revels in toying with her prey by manipulating their emotions before devouring their life essence. Despite her predatory nature...", imageName: "Ahri.png"))
-//        champions.append(Champion(name: "Akali", title: "the Rogue Assassin", blurb: "Abandoning the Kinkou Order and her title of the Fist of Shadow, Akali now strikes alone, ready to be the deadly weapon her people need. Though she holds onto all she learned from her master Shen, she has pledged to defend Ionia from its enemies, one...", imageName: "Akali.png"))
-//        champions.append(Champion(name: "Alistar", title: "the Sad Mummy", blurb: "Legend claims that Amumu is a lonely and melancholy soul from ancient Shurima, roaming the world in search of a friend. Doomed by an ancient curse to remain alone forever, his touch is death, his affection ruin. Those who claim to have seen him describe...", imageName: "Alistar.png"))
-//
-//        champions.append(Champion(name: "Amumu", title: "the Minotaur", blurb: "Always a mighty warrior with a fearsome reputation, Alistar seeks revenge for the death of his clan at the hands of the Noxian empire. Though he was enslaved and forced into the life of a gladiator, his unbreakable will was what kept him from truly...", imageName: "Amumu.png"))
-//        champions.append(Champion(name: "Aatrox", title: "the Darkin Blade", blurb: "Once honored defenders of Shurima against the Void, Aatrox and his brethren would eventually become an even greater threat to Runeterra, and were defeated only by cunning mortal sorcery. But after centuries of imprisonment, Aatrox was the first to find...", imageName: "Aatrox.png"))
-//        champions.append(Champion(name: "Ahri", title: "the Nine-Tailed Fox", blurb: "Innately connected to the latent power of Runeterra, Ahri is a vastaya who can reshape magic into orbs of raw energy. She revels in toying with her prey by manipulating their emotions before devouring their life essence. Despite her predatory nature...", imageName: "Ahri.png"))
-//
-//        champions.append(Champion(name: "Akali", title: "the Rogue Assassin", blurb: "Abandoning the Kinkou Order and her title of the Fist of Shadow, Akali now strikes alone, ready to be the deadly weapon her people need. Though she holds onto all she learned from her master Shen, she has pledged to defend Ionia from its enemies, one...", imageName: "Akali.png"))
-//        champions.append(Champion(name: "Alistar", title: "the Sad Mummy", blurb: "Legend claims that Amumu is a lonely and melancholy soul from ancient Shurima, roaming the world in search of a friend. Doomed by an ancient curse to remain alone forever, his touch is death, his affection ruin. Those who claim to have seen him describe...", imageName: "Alistar.png"))
-//        champions.append(Champion(name: "Amumu", title: "the Minotaur", blurb: "Always a mighty warrior with a fearsome reputation, Alistar seeks revenge for the death of his clan at the hands of the Noxian empire. Though he was enslaved and forced into the life of a gladiator, his unbreakable will was what kept him from truly...", imageName: "Amumu.png"))
-//
-//        champions.append(Champion(name: "Amumu", title: "the Minotaur", blurb: "Always a mighty warrior with a fearsome reputation, Alistar seeks revenge for the death of his clan at the hands of the Noxian empire. Though he was enslaved and forced into the life of a gladiator, his unbreakable will was what kept him from truly...", imageName: "Amumu.png"))
+
     }
     
     let columnCount = 3
     
     @State var searchText = "" {
         didSet {
-            print(2)
             self.updateDisplayChampions()
         }
     }
@@ -71,8 +49,6 @@ struct ChampionsListView: View {
     @State var displayChampions = [Champion]()
     
     func updateDisplayChampions() {
-        print("update")
-        
         var filteredCampions = champions
         
         if searchText != "" {
@@ -84,13 +60,12 @@ struct ChampionsListView: View {
         }
         
         displayChampions = filteredCampions
-        print(displayChampions.count)
-        print(displayChampions.count > 0 ? displayChampions[0].name : "")
     }
     
-    let tags = ["All", "Assassin", "Fighter", "Mage", "Marksman", "Support", "Tank", "e"]
+    let tags = ["Assassin", "Fighter", "Mage", "Support", "Tank"]
     
     var body: some View {
+        
         GeometryReader { geo in
             NavigationView {
                 ScrollView(.vertical, showsIndicators: true) {
@@ -109,36 +84,13 @@ struct ChampionsListView: View {
                                 Text(self.tags[i]).tag(i)
                             }
                         }
-                        .pickerStyle(SegmentedPickerStyle())
-//                        .padding(.horizontal, 24)
-                        .onReceive([self.selectorIndex].publisher.first()) { (value) in
+                        .onAppear(){
                             self.updateDisplayChampions()
                         }
-                        
-                        // grid view
-//                        ForEach(Array(stride(from: 0, to: self.displayChampions.count, by: self.columnCount)), id: \.self) { index in
-//                            HStack {
-////                                ForEach(index..<min(index + self.columnCount, self.displayChampions.count)) { championIndex in
-////                                    if championIndex < self.displayChampions.count {
-////                                        NavigationLink(destination: ChampionDetail(champion: self.displayChampions[championIndex])) {
-////                                            ChampionGrid(champion: self.displayChampions[championIndex])
-////                                        }
-////                                    }
-////                                }
-//                                ForEach(index..<index + self.columnCount) { championIndex in
-//                                    if championIndex < self.displayChampions.count {
-//                                        NavigationLink(destination: ChampionDetail(champion: self.displayChampions[championIndex])) {
-//                                            ChampionGrid(champion: self.displayChampions[championIndex])
-//                                        }
-//                                    }
-//                                }
-//                                Spacer()
-//                            }
-//                        }
-                        ChampionsGridView(columnCount: 3, champions: self.$displayChampions)
+                        .pickerStyle(SegmentedPickerStyle())
                     }
                     .padding()
-                    .frame(width: geo.size.width)
+                    ChampionsGridView(columnCount: 3, champions: self.displayChampions, tag:self.tags[self.selectorIndex])
                 }
                 .navigationBarTitle("Champions")
             }
@@ -158,18 +110,34 @@ class ObservableChampion: ObservableObject {
 struct ChampionsGridView: View {
 
     let columnCount: Int
-    @Binding var champions: [Champion]
-    
+    var champions: [Champion]
+    var image = Image(systemName: "person")
+    @State var images = [String:Image]()
+    init(columnCount:Int, champions:[Champion], tag:String) {
+        if tag != "ALL"{
+            self.champions = champions.filter({
+                $0.tags.contains(tag)
+            })
+        }else{
+            self.champions=champions
+        }
+        self.columnCount=columnCount
+    }
     var body: some View {
         VStack {
-            ForEach(0..<getColumns(champions.count), id: \.self) { i in
-                HStack {
-                    ChampionGridRow(champions: Array(self.champions[self.getStart(i)..<self.getEnd(i, count: self.champions.count)]))
-                }
+            ForEach(0..<getColumns(champions.count), id:\.self) { i in
+                ChampionGridRow(champions: Array(self.champions[self.getStart(i)..<self.getEnd(i, count: self.champions.count)]))
             }
+        }.onAppear(){
+            
         }
     }
-    
+    func imageBuilder(image:Image?) -> Image{
+        if image == nil{
+            return Image(systemName: "person")
+        }
+        return image!
+    }
     func getColumns(_ i: Int) -> Int {
         return (i - 1) / 3 + 1
     }

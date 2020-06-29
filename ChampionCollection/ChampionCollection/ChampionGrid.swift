@@ -14,7 +14,7 @@ struct ChampionGridRow: View {
     
     var body: some View {
         HStack {
-            ForEach(self.champions.indices, id: \.self) { i in
+            ForEach(0..<self.champions.count, id: \.self) { i in
                 NavigationLink(destination: ChampionDetail(champion: self.champions[i])) {
                     ChampionGrid(champion: self.champions[i])
                 }
